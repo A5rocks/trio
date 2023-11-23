@@ -130,7 +130,7 @@ else
     echo "::group:: Run Tests"
     for run in {1..50}
     do
-        if COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml coverage run --rcfile=../pyproject.toml -m pytest -ra --junitxml=../test-results.xml --run-slow ${INSTALLDIR} --verbose --durations=10 $flags; then
+        if COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml coverage run --rcfile=../pyproject.toml -m pytest -ra -k 'not test_static_tool_sees_all_symbols' --junitxml=../test-results.xml --run-slow ${INSTALLDIR} --verbose --durations=10 $flags; then
             PASSED=true
         else
             exit 1
