@@ -6,9 +6,6 @@ import pytest
 from .. import abc as tabc
 from ..lowlevel import Task
 
-def test_success() -> None:
-    assert True
-
 def test_instrument_implements_hook_methods() -> None:
     attrs = {
         "before_run": (),

@@ -128,9 +128,9 @@ else
 
     echo "::endgroup::"
     echo "::group:: Run Tests"
-    for run in {1..500}
+    for run in {1..50}
     do
-        if COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml coverage run --rcfile=../pyproject.toml -m pytest -ra -k test_success --junitxml=../test-results.xml --run-slow ${INSTALLDIR} --verbose --durations=10 $flags; then
+        if COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml coverage run --rcfile=../pyproject.toml -m pytest -ra --junitxml=../test-results.xml --run-slow ${INSTALLDIR} --verbose --durations=10 $flags; then
             PASSED=true
         else
             exit 1

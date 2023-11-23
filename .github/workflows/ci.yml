@@ -8,7 +8,7 @@ on:
 
 jobs:
   Ubuntu:
-    name: 'Ubuntu (${{ matrix.python }}${{ matrix.extra_name }})'
+    name: 'Ubuntu (${{ matrix.python }}${{ matrix.extra_name }}) ${{ matrix.count }}'
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
@@ -17,6 +17,7 @@ jobs:
         check_formatting: ['0']
         no_test_requirements: ['0']
         extra_name: ['']
+        count: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
     continue-on-error: >-
       ${{
         (
