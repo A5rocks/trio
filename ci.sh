@@ -139,6 +139,7 @@ else
         rm -rf .pytest_cache
         rm -rf .coverage*
     done
+    exit 0
     echo "::endgroup::"
     echo "::group::Coverage"
 
