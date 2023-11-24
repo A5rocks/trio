@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['pypy-3.10']
+        python: ['python-3.10']
         check_formatting: ['0']
         no_test_requirements: ['0']
         extra_name: ['']
