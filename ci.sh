@@ -139,6 +139,7 @@ else
         fi
         rm -rf .pytest_cache
         rm -rf .coverage*
+        find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
     done
     exit 0
     echo "::endgroup::"
