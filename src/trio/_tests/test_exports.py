@@ -130,7 +130,7 @@ PUBLIC_MODULE_NAMES = [m.__name__ for m in PUBLIC_MODULES]
     "ignore:module 'sre_constants' is deprecated:DeprecationWarning",
 )
 def test_static_tool_sees_all_symbols(tool: str, modname: str, tmp_path: Path) -> None:
-    # return
+    return
     module = importlib.import_module(modname)
 
     def no_underscores(symbols: Iterable[str]) -> set[str]:
@@ -269,7 +269,7 @@ def test_static_tool_sees_all_symbols(tool: str, modname: str, tmp_path: Path) -
 def test_static_tool_sees_class_members(
     tool: str, module_name: str, tmp_path: Path
 ) -> None:
-    # return
+    return
     module = PUBLIC_MODULES[PUBLIC_MODULE_NAMES.index(module_name)]
 
     # ignore hidden, but not dunder, symbols
