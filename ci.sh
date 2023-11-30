@@ -56,6 +56,7 @@ else
         flags="--skip-optional-imports"
     else
         python -m pip install -r test-requirements.txt
+        sed -e 's/rewrite_asserts(tree, source, strfn, config)/rewrite_asserts(tree, source, strfn, config);open("tree","w").write(repr(tree))/' /opt/hostedtoolcache/PyPy/3.10.13/x64/lib/pypy3.10/site-packages/_pytest/assertion/rewrite.py
         flags=""
     fi
 
@@ -133,6 +134,7 @@ else
         if COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml coverage run --rcfile=../pyproject.toml -m pytest -ra --junitxml=../test-results.xml --run-slow ${INSTALLDIR} --verbose --durations=10 $flags; then
             PASSED=true
         else
+            cat tree
             exit 1
             PASSED=false
         fi
