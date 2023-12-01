@@ -129,18 +129,15 @@ else
 
     echo "::endgroup::"
     echo "::group:: Run Tests"
-    for run in {1..50}
-    do
-        if COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml coverage run --rcfile=../pyproject.toml -m pytest -ra --junitxml=../test-results.xml --run-slow ${INSTALLDIR} --verbose --durations=10 $flags; then
-            PASSED=true
-        else
-            exit 1
-            PASSED=false
-        fi
-        rm -rf .pytest_cache
-        rm -rf .coverage*
-        find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
-    done
+    if COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml coverage run --rcfile=../pyproject.toml -m pytest -ra --junitxml=../test-results.xml --run-slow ${INSTALLDIR} --verbose --durations=10 -s $flags; then
+        PASSED=true
+    else
+        exit 1
+        PASSED=false
+    fi
+    rm -rf .pytest_cache
+    rm -rf .coverage*
+    find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
     exit 0
     echo "::endgroup::"
     echo "::group::Coverage"
