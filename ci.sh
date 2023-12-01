@@ -56,7 +56,7 @@ else
         flags="--skip-optional-imports"
     else
         python -m pip install -r test-requirements.txt
-        sed -i -e 's/rewrite_asserts(tree, source, strfn, config)/import ast;rewrite_asserts(tree, source, strfn, config);print(ast.dump(tree))/' /opt/hostedtoolcache/PyPy/3.10.13/x64/lib/pypy3.10/site-packages/_pytest/assertion/rewrite.py
+        sed -i -e 's/rewrite_asserts(tree, source, strfn, config)/rewrite_asserts(tree, source, strfn, config);print(ast.dump(tree))/' /opt/hostedtoolcache/PyPy/3.10.13/x64/lib/pypy3.10/site-packages/_pytest/assertion/rewrite.py
         flags=""
     fi
 
