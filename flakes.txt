@@ -1,0 +1,2 @@
+list of flaky tests, their platform, and why:
+ - `test_handshake_over_terrible_network`, Windows x86 Python 3.8, timeout. Seen at https://github.com/A5rocks/trio/actions/runs/10980215293/job/30485726399
