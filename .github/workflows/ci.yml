@@ -12,7 +12,6 @@ concurrency:
 jobs:
   Windows:
     name: 'Windows (${{ matrix.python }}, ${{ matrix.arch }}${{ matrix.extra_name }})'
-    timeout-minutes: 20
     runs-on: 'windows-latest'
     strategy:
       fail-fast: false
@@ -81,7 +80,6 @@ jobs:
 
   Ubuntu:
     name: 'Ubuntu (${{ matrix.python }}${{ matrix.extra_name }})'
-    timeout-minutes: 10
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
@@ -137,7 +135,6 @@ jobs:
 
   macOS:
     name: 'macOS (${{ matrix.python }})'
-    timeout-minutes: 15
     runs-on: 'macos-latest'
     strategy:
       fail-fast: false
