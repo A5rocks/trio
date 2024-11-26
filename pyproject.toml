@@ -140,9 +140,6 @@ extend-ignore = [
     "PERF203", # try-except-in-loop (not always possible to refactor)
     "PT012",   # multiple statements in pytest.raises block
     "SIM117",  # multiple-with-statements (messes up lots of context-based stuff and looks bad)
-
-    # conflicts with formatter (ruff recommends these be disabled)
-    "COM812",
 ]
 
 [tool.ruff.lint.per-file-ignores]
