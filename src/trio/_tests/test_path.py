@@ -19,7 +19,8 @@ def path(tmp_path: pathlib.Path) -> trio.Path:
 
 
 def method_pair(
-    path: str, method_name: str
+    path: str,
+    method_name: str,
 ) -> tuple[Callable[[], object], Callable[[], Awaitable[object]]]:
     sync_path = pathlib.Path(path)
     async_path = trio.Path(path)
@@ -97,7 +98,8 @@ def test_div_magic(cls_a: PathOrStrType, cls_b: PathOrStrType) -> None:
 
 
 @pytest.mark.parametrize(
-    ("cls_a", "cls_b"), [(trio.Path, pathlib.Path), (trio.Path, trio.Path)]
+    ("cls_a", "cls_b"),
+    [(trio.Path, pathlib.Path), (trio.Path, trio.Path)],
 )
 @pytest.mark.parametrize("path", ["foo", "foo/bar/baz", "./foo"])
 def test_hash_magic(cls_a: EitherPathType, cls_b: EitherPathType, path: str) -> None:
@@ -176,7 +178,8 @@ def test_repr() -> None:
 
 @pytest.mark.parametrize("meth", [trio.Path.__init__, trio.Path.joinpath])
 async def test_path_wraps_path(
-    path: trio.Path, meth: Callable[[trio.Path, trio.Path], object]
+    path: trio.Path,
+    meth: Callable[[trio.Path, trio.Path], object],
 ) -> None:
     wrapped = await path.absolute()
     result = meth(path, wrapped)
@@ -260,7 +263,7 @@ async def test_classmethods() -> None:
     ],
 )
 def test_wrapping_without_docstrings(
-    wrapper: Callable[[Callable[[], None]], Callable[[], None]]
+    wrapper: Callable[[Callable[[], None]], Callable[[], None]],
 ) -> None:
     @wrapper
     def func_without_docstring() -> None: ...  # pragma: no cover

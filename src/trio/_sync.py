@@ -304,7 +304,7 @@ class CapacityLimiter(AsyncContextManagerMixin):
         """
         if borrower in self._borrowers:
             raise RuntimeError(
-                "this borrower is already holding one of this CapacityLimiter's tokens"
+                "this borrower is already holding one of this CapacityLimiter's tokens",
             )
         if len(self._borrowers) < self._total_tokens and not self._lot:
             self._borrowers.add(borrower)
@@ -373,7 +373,7 @@ class CapacityLimiter(AsyncContextManagerMixin):
         """
         if borrower not in self._borrowers:
             raise RuntimeError(
-                "this borrower isn't holding any of this CapacityLimiter's tokens"
+                "this borrower isn't holding any of this CapacityLimiter's tokens",
             )
         self._borrowers.remove(borrower)
         self._wake_waiters()
@@ -605,7 +605,7 @@ class _LockImpl(AsyncContextManagerMixin):
                 await self._lot.park()
             except trio.BrokenResourceError:
                 raise trio.BrokenResourceError(
-                    f"Owner of this lock exited without releasing: {self._owner}"
+                    f"Owner of this lock exited without releasing: {self._owner}",
                 ) from None
         else:
             await trio.lowlevel.cancel_shielded_checkpoint()
@@ -641,7 +641,9 @@ class _LockImpl(AsyncContextManagerMixin):
 
         """
         return LockStatistics(
-            locked=self.locked(), owner=self._owner, tasks_waiting=len(self._lot)
+            locked=self.locked(),
+            owner=self._owner,
+            tasks_waiting=len(self._lot),
         )
 
 
@@ -869,5 +871,6 @@ class Condition(AsyncContextManagerMixin):
 
         """
         return ConditionStatistics(
-            tasks_waiting=len(self._lot), lock_statistics=self._lock.statistics()
+            tasks_waiting=len(self._lot),
+            lock_statistics=self._lock.statistics(),
         )

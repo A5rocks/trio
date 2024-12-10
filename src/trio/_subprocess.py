@@ -233,7 +233,7 @@ class Process(metaclass=NoPublicConstructor):
             if self.poll() is None:
                 if self._pidfd is not None:
                     with contextlib.suppress(
-                        ClosedResourceError
+                        ClosedResourceError,
                     ):  # something else (probably a call to poll) already closed the pidfd
                         await trio.lowlevel.wait_readable(self._pidfd.fileno())
                 else:
@@ -358,7 +358,7 @@ async def _open_process(
         if options.get(key):
             raise TypeError(
                 "trio.Process only supports communicating over "
-                f"unbuffered byte streams; the '{key}' option is not supported"
+                f"unbuffered byte streams; the '{key}' option is not supported",
             )
 
     if os.name == "posix":
@@ -366,12 +366,12 @@ async def _open_process(
         if isinstance(command, (str, bytes)) and not options.get("shell"):
             raise TypeError(
                 "command must be a sequence (not a string or bytes) if "
-                "shell=False on UNIX systems"
+                "shell=False on UNIX systems",
             )
         if not isinstance(command, (str, bytes)) and options.get("shell"):
             raise TypeError(
                 "command must be a string or bytes (not a sequence) if "
-                "shell=True on UNIX systems"
+                "shell=True on UNIX systems",
             )
 
     trio_stdin: ClosableSendStream | None = None
@@ -414,7 +414,7 @@ async def _open_process(
                 stdout=stdout,
                 stderr=stderr,
                 **options,
-            )
+            ),
         )
         # We did not fail, so dismiss the stack for the trio ends
         cleanup_on_fail.pop_all()
@@ -441,7 +441,7 @@ async def _posix_deliver_cancel(p: Process) -> None:
             RuntimeWarning(
                 f"process {p!r} ignored SIGTERM for 5 seconds. "
                 "(Maybe you should pass a custom deliver_cancel?) "
-                "Trying SIGKILL."
+                "Trying SIGKILL.",
             ),
             stacklevel=1,
         )
@@ -669,17 +669,17 @@ async def _run_process(
             raise ValueError(
                 "stdout=subprocess.PIPE is only valid with nursery.start, "
                 "since that's the only way to access the pipe; use nursery.start "
-                "or pass the data you want to write directly"
+                "or pass the data you want to write directly",
             )
         if options.get("stdout") is subprocess.PIPE:
             raise ValueError(
                 "stdout=subprocess.PIPE is only valid with nursery.start, "
-                "since that's the only way to access the pipe"
+                "since that's the only way to access the pipe",
             )
         if options.get("stderr") is subprocess.PIPE:
             raise ValueError(
                 "stderr=subprocess.PIPE is only valid with nursery.start, "
-                "since that's the only way to access the pipe"
+                "since that's the only way to access the pipe",
             )
     if isinstance(stdin, (bytes, bytearray, memoryview)):
         input_ = stdin
@@ -719,7 +719,8 @@ async def _run_process(
                 pass
 
     async def read_output(
-        stream: ReceiveStream, chunks: list[bytes | bytearray]
+        stream: ReceiveStream,
+        chunks: list[bytes | bytearray],
     ) -> None:
         async with stream:
             async for chunk in stream:
@@ -765,7 +766,10 @@ async def _run_process(
 
     if proc.returncode and check:
         raise subprocess.CalledProcessError(
-            proc.returncode, proc.args, output=stdout, stderr=stderr
+            proc.returncode,
+            proc.args,
+            output=stdout,
+            stderr=stderr,
         )
     else:
         assert proc.returncode is not None

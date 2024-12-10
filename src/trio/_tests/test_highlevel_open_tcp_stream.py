@@ -152,12 +152,14 @@ async def test_local_address_real() -> None:
         local_address = "127.0.0.2" if can_bind_127_0_0_2() else "127.0.0.1"
 
         async with await open_tcp_stream(
-            *listener.getsockname(), local_address=local_address
+            *listener.getsockname(),
+            local_address=local_address,
         ) as client_stream:
             assert client_stream.socket.getsockname()[0] == local_address
             if hasattr(trio.socket, "IP_BIND_ADDRESS_NO_PORT"):
                 assert client_stream.socket.getsockopt(
-                    trio.socket.IPPROTO_IP, trio.socket.IP_BIND_ADDRESS_NO_PORT
+                    trio.socket.IPPROTO_IP,
+                    trio.socket.IP_BIND_ADDRESS_NO_PORT,
                 )
             server_sock, remote_addr = await listener.accept()
             await client_stream.aclose()
@@ -168,13 +170,15 @@ async def test_local_address_real() -> None:
         # Trying to connect to an ipv4 address with the ipv6 wildcard
         # local_address should fail
         with pytest.raises(
-            OSError, match=r"^all attempts to connect* to *127\.0\.0\.\d:\d+ failed$"
+            OSError,
+            match=r"^all attempts to connect* to *127\.0\.0\.\d:\d+ failed$",
         ):
             await open_tcp_stream(*listener.getsockname(), local_address="::")
 
         # But the ipv4 wildcard address should work
         async with await open_tcp_stream(
-            *listener.getsockname(), local_address="0.0.0.0"
+            *listener.getsockname(),
+            local_address="0.0.0.0",
         ) as client_stream:
             server_sock, remote_addr = await listener.accept()
             server_sock.close()
@@ -273,9 +277,14 @@ class Scenario(trio.abc.SocketFactory, trio.abc.HostnameResolver):
         return FakeSocket(self, family, type_, proto)
 
     def _ip_to_gai_entry(
-        self, ip: str
+        self,
+        ip: str,
     ) -> tuple[
-        AddressFamily, SocketKind, int, str, tuple[str, int, int, int] | tuple[str, int]
+        AddressFamily,
+        SocketKind,
+        int,
+        str,
+        tuple[str, int, int, int] | tuple[str, int],
     ]:
         sockaddr: tuple[str, int] | tuple[str, int, int, int]
         if ":" in ip:
@@ -312,7 +321,9 @@ class Scenario(trio.abc.SocketFactory, trio.abc.HostnameResolver):
         return [self._ip_to_gai_entry(ip) for ip in self.ip_order]
 
     async def getnameinfo(
-        self, sockaddr: tuple[str, int] | tuple[str, int, int, int], flags: int
+        self,
+        sockaddr: tuple[str, int] | tuple[str, int, int, int],
+        flags: int,
     ) -> tuple[str, str]:
         raise NotImplementedError
 
@@ -391,7 +402,9 @@ async def test_one_host_slow_success(autojump_clock: MockClock) -> None:
 
 async def test_one_host_quick_fail(autojump_clock: MockClock) -> None:
     exc, _scenario = await run_scenario(
-        82, [("1.2.3.4", 0.123, "error")], expect_error=OSError
+        82,
+        [("1.2.3.4", 0.123, "error")],
+        expect_error=OSError,
     )
     assert isinstance(exc, OSError)
     assert trio.current_time() == 0.123
@@ -399,7 +412,9 @@ async def test_one_host_quick_fail(autojump_clock: MockClock) -> None:
 
 async def test_one_host_slow_fail(autojump_clock: MockClock) -> None:
     exc, _scenario = await run_scenario(
-        83, [("1.2.3.4", 100, "error")], expect_error=OSError
+        83,
+        [("1.2.3.4", 100, "error")],
+        expect_error=OSError,
     )
     assert isinstance(exc, OSError)
     assert trio.current_time() == 100
@@ -407,7 +422,9 @@ async def test_one_host_slow_fail(autojump_clock: MockClock) -> None:
 
 async def test_one_host_failed_after_connect(autojump_clock: MockClock) -> None:
     exc, _scenario = await run_scenario(
-        83, [("1.2.3.4", 1, "postconnect_fail")], expect_error=KeyboardInterrupt
+        83,
+        [("1.2.3.4", 1, "postconnect_fail")],
+        expect_error=KeyboardInterrupt,
     )
     assert isinstance(exc, KeyboardInterrupt)
 
@@ -520,7 +537,8 @@ async def test_all_fail(autojump_clock: MockClock) -> None:
 
     subexceptions = (Matcher(OSError, match="^sorry$"),) * 4
     assert RaisesGroup(
-        *subexceptions, match="all attempts to connect to test.example.com:80 failed"
+        *subexceptions,
+        match="all attempts to connect to test.example.com:80 failed",
     ).matches(exc.__cause__)
 
     assert trio.current_time() == (0.1 + 0.2 + 10)

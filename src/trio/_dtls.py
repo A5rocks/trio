@@ -180,7 +180,10 @@ def records_untrusted(packet: bytes) -> Iterator[Record]:
 
 def encode_record(record: Record) -> bytes:
     header = RECORD_HEADER.pack(
-        record.content_type, record.version, record.epoch_seqno, len(record.payload)
+        record.content_type,
+        record.version,
+        record.epoch_seqno,
+        len(record.payload),
     )
     return header + record.payload
 
@@ -331,7 +334,9 @@ class OpaqueHandshakeMessage:
 
 
 _AnyHandshakeMessage: TypeAlias = Union[
-    HandshakeMessage, PseudoHandshakeMessage, OpaqueHandshakeMessage
+    HandshakeMessage,
+    PseudoHandshakeMessage,
+    OpaqueHandshakeMessage,
 ]
 
 
@@ -354,8 +359,10 @@ def decode_volley_trusted(volley: bytes) -> list[_AnyHandshakeMessage]:
         elif record.content_type in (ContentType.change_cipher_spec, ContentType.alert):
             messages.append(
                 PseudoHandshakeMessage(
-                    record.version, record.content_type, record.payload
-                )
+                    record.version,
+                    record.content_type,
+                    record.payload,
+                ),
             )
         else:
             assert record.content_type == ContentType.handshake
@@ -391,7 +398,9 @@ class RecordEncoder:
         self._record_seq = count(n)
 
     def encode_volley(
-        self, messages: Iterable[_AnyHandshakeMessage], mtu: int
+        self,
+        messages: Iterable[_AnyHandshakeMessage],
+        mtu: int,
     ) -> list[bytearray]:
         packets = []
         packet = bytearray()
@@ -538,7 +547,11 @@ def _signable(*fields: bytes) -> bytes:
 
 
 def _make_cookie(
-    key: bytes, salt: bytes, tick: int, address: AddressFormat, client_hello_bits: bytes
+    key: bytes,
+    salt: bytes,
+    tick: int,
+    address: AddressFormat,
+    client_hello_bits: bytes,
 ) -> bytes:
     assert len(salt) == SALT_BYTES
     assert len(key) == KEY_BYTES
@@ -556,7 +569,10 @@ def _make_cookie(
 
 
 def valid_cookie(
-    key: bytes, cookie: bytes, address: AddressFormat, client_hello_bits: bytes
+    key: bytes,
+    cookie: bytes,
+    address: AddressFormat,
+    client_hello_bits: bytes,
 ) -> bool:
     if len(cookie) > SALT_BYTES:
         salt = cookie[:SALT_BYTES]
@@ -565,20 +581,28 @@ def valid_cookie(
 
         cur_cookie = _make_cookie(key, salt, tick, address, client_hello_bits)
         old_cookie = _make_cookie(
-            key, salt, max(tick - 1, 0), address, client_hello_bits
+            key,
+            salt,
+            max(tick - 1, 0),
+            address,
+            client_hello_bits,
         )
 
         # I doubt using a short-circuiting 'or' here would leak any meaningful
         # information, but why risk it when '|' is just as easy.
         return hmac.compare_digest(cookie, cur_cookie) | hmac.compare_digest(
-            cookie, old_cookie
+            cookie,
+            old_cookie,
         )
     else:
         return False
 
 
 def challenge_for(
-    key: bytes, address: AddressFormat, epoch_seqno: int, client_hello_bits: bytes
+    key: bytes,
+    address: AddressFormat,
+    epoch_seqno: int,
+    client_hello_bits: bytes,
 ) -> bytes:
     salt = os.urandom(SALT_BYTES)
     tick = _current_cookie_tick()
@@ -614,7 +638,7 @@ def challenge_for(
     payload = encode_handshake_fragment(hs)
 
     packet = encode_record(
-        Record(ContentType.handshake, ProtocolVersion.DTLS10, epoch_seqno, payload)
+        Record(ContentType.handshake, ProtocolVersion.DTLS10, epoch_seqno, payload),
     )
     return packet
 
@@ -639,7 +663,9 @@ def _read_loop(read_fn: Callable[[int], bytes]) -> bytes:
 
 
 async def handle_client_hello_untrusted(
-    endpoint: DTLSEndpoint, address: AddressFormat, packet: bytes
+    endpoint: DTLSEndpoint,
+    address: AddressFormat,
+    packet: bytes,
 ) -> None:
     # it's trivial to write a simple function that directly calls this to
     # get code coverage, but it should maybe:
@@ -659,7 +685,10 @@ async def handle_client_hello_untrusted(
 
     if not valid_cookie(endpoint._listening_key, cookie, address, bits):
         challenge_packet = challenge_for(
-            endpoint._listening_key, address, epoch_seqno, bits
+            endpoint._listening_key,
+            address,
+            epoch_seqno,
+            bits,
         )
         try:
             async with endpoint._send_lock:
@@ -702,7 +731,8 @@ async def handle_client_hello_untrusted(
 
 
 async def dtls_receive_loop(
-    endpoint_ref: ReferenceType[DTLSEndpoint], sock: SocketType
+    endpoint_ref: ReferenceType[DTLSEndpoint],
+    sock: SocketType,
 ) -> None:
     try:
         while True:
@@ -793,7 +823,10 @@ class DTLSChannel(trio.abc.Channel[bytes], metaclass=NoPublicConstructor):
     """
 
     def __init__(
-        self, endpoint: DTLSEndpoint, peer_address: AddressFormat, ctx: SSL.Context
+        self,
+        endpoint: DTLSEndpoint,
+        peer_address: AddressFormat,
+        ctx: SSL.Context,
     ) -> None:
         self.endpoint = endpoint
         self.peer_address = peer_address
@@ -806,7 +839,7 @@ class DTLSChannel(trio.abc.Channel[bytes], metaclass=NoPublicConstructor):
         # support and isn't useful anyway -- especially for DTLS where it's equivalent
         # to just performing a new handshake.
         ctx.set_options(
-            SSL.OP_NO_QUERY_MTU | SSL.OP_NO_RENEGOTIATION  # type: ignore[attr-defined]
+            SSL.OP_NO_QUERY_MTU | SSL.OP_NO_RENEGOTIATION,  # type: ignore[attr-defined]
         )
         self._ssl = SSL.Connection(ctx)
         self._handshake_mtu = 0
@@ -830,7 +863,7 @@ class DTLSChannel(trio.abc.Channel[bytes], metaclass=NoPublicConstructor):
     def _check_replaced(self) -> None:
         if self._replaced:
             raise trio.BrokenResourceError(
-                "peer tore down this connection to start a new one"
+                "peer tore down this connection to start a new one",
             )
 
     # XX on systems where we can (maybe just Linux?) take advantage of the kernel's PMTU
@@ -884,7 +917,8 @@ class DTLSChannel(trio.abc.Channel[bytes], metaclass=NoPublicConstructor):
 
     async def _send_volley(self, volley_messages: list[_AnyHandshakeMessage]) -> None:
         packets = self._record_encoder.encode_volley(
-            volley_messages, self._handshake_mtu
+            volley_messages,
+            self._handshake_mtu,
         )
         for packet in packets:
             async with self.endpoint._send_lock:
@@ -1019,7 +1053,8 @@ class DTLSChannel(trio.abc.Channel[bytes], metaclass=NoPublicConstructor):
                         # PMTU estimate is wrong? Let's try dropping it to the minimum
                         # and hope that helps.
                         self._handshake_mtu = min(
-                            self._handshake_mtu, worst_case_mtu(self.endpoint.socket)
+                            self._handshake_mtu,
+                            worst_case_mtu(self.endpoint.socket),
                         )
 
     async def send(self, data: bytes) -> None:
@@ -1035,7 +1070,8 @@ class DTLSChannel(trio.abc.Channel[bytes], metaclass=NoPublicConstructor):
         self._ssl.write(data)
         async with self.endpoint._send_lock:
             await self.endpoint.socket.sendto(
-                _read_loop(self._ssl.bio_read), self.peer_address
+                _read_loop(self._ssl.bio_read),
+                self.peer_address,
             )
 
     async def receive(self) -> bytes:
@@ -1141,7 +1177,10 @@ class DTLSEndpoint:
     """
 
     def __init__(
-        self, socket: SocketType, *, incoming_packets_buffer: int = 10
+        self,
+        socket: SocketType,
+        *,
+        incoming_packets_buffer: int = 10,
     ) -> None:
         # We do this lazily on first construction, so only people who actually use DTLS
         # have to install PyOpenSSL.
@@ -1178,7 +1217,9 @@ class DTLSEndpoint:
         # after we send our first packet.
         if not self._receive_loop_spawned:
             trio.lowlevel.spawn_system_task(
-                dtls_receive_loop, weakref.ref(self), self.socket
+                dtls_receive_loop,
+                weakref.ref(self),
+                self.socket,
             )
             self._receive_loop_spawned = True
 
@@ -1270,7 +1311,7 @@ class DTLSEndpoint:
         except OSError:
             # TODO: Write test that triggers this
             raise RuntimeError(  # pragma: no cover
-                "DTLS socket must be bound before it can serve"
+                "DTLS socket must be bound before it can serve",
             ) from None
         self._ensure_receive_loop()
         # We do cookie verification ourselves, so tell OpenSSL not to worry about it.
@@ -1291,7 +1332,9 @@ class DTLSEndpoint:
             self._listening_context = None
 
     def connect(
-        self, address: tuple[str, int], ssl_context: SSL.Context
+        self,
+        address: tuple[str, int],
+        ssl_context: SSL.Context,
     ) -> DTLSChannel:
         """Initiate an outgoing DTLS connection.
 

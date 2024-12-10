@@ -186,7 +186,10 @@ def spawn_system_task(
     """
     try:
         return GLOBAL_RUN_CONTEXT.runner.spawn_system_task(
-            async_fn, *args, name=name, context=context
+            async_fn,
+            *args,
+            name=name,
+            context=context,
         )
     except AttributeError:
         raise RuntimeError("must be called from async context") from None

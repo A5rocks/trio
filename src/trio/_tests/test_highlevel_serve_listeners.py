@@ -125,7 +125,8 @@ async def test_serve_listeners_accept_unrecognized_error() -> None:
 
 
 async def test_serve_listeners_accept_capacity_error(
-    autojump_clock: MockClock, caplog: pytest.LogCaptureFixture
+    autojump_clock: MockClock,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     listener = MemoryListener()
 
@@ -157,7 +158,8 @@ async def test_serve_listeners_connection_nursery(autojump_clock: MockClock) -> 
         pass
 
     async def connection_watcher(
-        *, task_status: TaskStatus[Nursery] = trio.TASK_STATUS_IGNORED
+        *,
+        task_status: TaskStatus[Nursery] = trio.TASK_STATUS_IGNORED,
     ) -> NoReturn:
         async with trio.open_nursery() as nursery:
             task_status.started(nursery)
@@ -177,7 +179,7 @@ async def test_serve_listeners_connection_nursery(autojump_clock: MockClock) -> 
                     handler,
                     [listener],
                     handler_nursery=handler_nursery,
-                )
+                ),
             )
             for _ in range(10):
                 nursery.start_soon(listener.connect)

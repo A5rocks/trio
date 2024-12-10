@@ -201,7 +201,8 @@ async def test_close_at_bad_time_for_receive_some(
     orig_wait_readable = _core._run.TheIOManager.wait_readable
 
     async def patched_wait_readable(
-        self: _core._run.TheIOManager, fd: int | _HasFileNo
+        self: _core._run.TheIOManager,
+        fd: int | _HasFileNo,
     ) -> None:
         await orig_wait_readable(self, fd)
         await r.aclose()
@@ -231,7 +232,8 @@ async def test_close_at_bad_time_for_send_all(monkeypatch: pytest.MonkeyPatch) -
     orig_wait_writable = _core._run.TheIOManager.wait_writable
 
     async def patched_wait_writable(
-        self: _core._run.TheIOManager, fd: int | _HasFileNo
+        self: _core._run.TheIOManager,
+        fd: int | _HasFileNo,
     ) -> None:
         await orig_wait_writable(self, fd)
         await s.aclose()

@@ -123,7 +123,11 @@ def deprecated(
 
 
 def deprecated_alias(
-    old_qualname: str, new_fn: Callable[ArgsT, RetT], version: str, *, issue: int | None
+    old_qualname: str,
+    new_fn: Callable[ArgsT, RetT],
+    version: str,
+    *,
+    issue: int | None,
 ) -> Callable[ArgsT, RetT]:
     @deprecated(version, issue=issue, instead=new_fn)
     @wraps(new_fn, assigned=("__module__", "__annotations__"))

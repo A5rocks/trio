@@ -134,7 +134,7 @@ def _count_context_run_tb_frames() -> int:
             raise
         else:  # pragma: no cover
             raise TrioInternalError(
-                "A ZeroDivisionError should have been raised, but it wasn't."
+                "A ZeroDivisionError should have been raised, but it wasn't.",
             )
 
     ctx = copy_context()
@@ -152,7 +152,7 @@ def _count_context_run_tb_frames() -> int:
     else:  # pragma: no cover
         raise TrioInternalError(
             f"The purpose of {function_with_unique_name_xyzzy.__name__} is "
-            "to raise a ZeroDivisionError, but it didn't."
+            "to raise a ZeroDivisionError, but it didn't.",
         )
 
 
@@ -211,7 +211,8 @@ def collapse_exception_group(
         and NONSTRICT_EXCEPTIONGROUP_NOTE in getattr(excgroup, "__notes__", ())
     ):
         exceptions[0].__traceback__ = concat_tb(
-            excgroup.__traceback__, exceptions[0].__traceback__
+            excgroup.__traceback__,
+            exceptions[0].__traceback__,
         )
         return exceptions[0]
     elif modified:
@@ -553,7 +554,7 @@ class CancelScope:
         task = _core.current_task()
         if self._has_been_entered:
             raise RuntimeError(
-                "Each CancelScope may only be used for a single 'with' block"
+                "Each CancelScope may only be used for a single 'with' block",
             )
         self._has_been_entered = True
 
@@ -573,7 +574,7 @@ class CancelScope:
         if self._cancel_status is None:
             new_exc = RuntimeError(
                 f"Cancel scope stack corrupted: attempted to exit {self!r} "
-                "which had already been exited"
+                "which had already been exited",
             )
             new_exc.__context__ = exc
             return new_exc
@@ -595,7 +596,7 @@ class CancelScope:
                 # without changing any state.
                 new_exc = RuntimeError(
                     f"Cancel scope stack corrupted: attempted to exit {self!r} "
-                    f"from unrelated {scope_task!r}\n{MISNESTING_ADVICE}"
+                    f"from unrelated {scope_task!r}\n{MISNESTING_ADVICE}",
                 )
                 new_exc.__context__ = exc
                 return new_exc
@@ -607,7 +608,7 @@ class CancelScope:
                 # pass silently.
                 new_exc = RuntimeError(
                     f"Cancel scope stack corrupted: attempted to exit {self!r} "
-                    f"in {scope_task!r} that's still within its child {scope_task._cancel_status._scope!r}\n{MISNESTING_ADVICE}"
+                    f"in {scope_task!r} that's still within its child {scope_task._cancel_status._scope!r}\n{MISNESTING_ADVICE}",
                 )
                 new_exc.__context__ = exc
                 exc = new_exc
@@ -746,7 +747,7 @@ class CancelScope:
             assert self._deadline == inf
             warnings.warn(
                 DeprecationWarning(
-                    "unentered relative cancel scope does not have an absolute deadline. Use `.relative_deadline`"
+                    "unentered relative cancel scope does not have an absolute deadline. Use `.relative_deadline`",
                 ),
                 stacklevel=2,
             )
@@ -761,7 +762,7 @@ class CancelScope:
             assert self._deadline == inf
             warnings.warn(
                 DeprecationWarning(
-                    "unentered relative cancel scope does not have an absolute deadline. Transforming into an absolute cancel scope. First set `.relative_deadline = math.inf` if you do want an absolute cancel scope."
+                    "unentered relative cancel scope does not have an absolute deadline. Transforming into an absolute cancel scope. First set `.relative_deadline = math.inf` if you do want an absolute cancel scope.",
                 ),
                 stacklevel=2,
             )
@@ -776,7 +777,7 @@ class CancelScope:
         elif self._deadline != inf:
             assert self._relative_deadline == inf
             raise RuntimeError(
-                "unentered non-relative cancel scope does not have a relative deadline"
+                "unentered non-relative cancel scope does not have a relative deadline",
             )
         return self._relative_deadline
 
@@ -792,7 +793,7 @@ class CancelScope:
         elif self._deadline != inf:
             assert self._relative_deadline == inf
             raise RuntimeError(
-                "unentered non-relative cancel scope does not have a relative deadline"
+                "unentered non-relative cancel scope does not have a relative deadline",
             )
         else:
             self._relative_deadline = new_relative_deadline
@@ -998,7 +999,9 @@ class NurseryManager:
         self._scope = CancelScope()
         self._scope.__enter__()
         self._nursery = Nursery._create(
-            current_task(), self._scope, self.strict_exception_groups
+            current_task(),
+            self._scope,
+            self.strict_exception_groups,
         )
         return self._nursery
 
@@ -1036,7 +1039,7 @@ class NurseryManager:
 
         def __enter__(self) -> NoReturn:
             raise RuntimeError(
-                "use 'async with open_nursery(...)', not 'with open_nursery(...)'"
+                "use 'async with open_nursery(...)', not 'with open_nursery(...)'",
             )
 
         def __exit__(
@@ -1165,7 +1168,8 @@ class Nursery(metaclass=NoPublicConstructor):
         self._check_nursery_closed()
 
     async def _nested_child_finished(
-        self, nested_child_exc: BaseException | None
+        self,
+        nested_child_exc: BaseException | None,
     ) -> BaseException | None:
         # Returns ExceptionGroup instance (or any exception if the nursery is in loose mode
         # and there is just one contained exception) if there are pending exceptions
@@ -1204,7 +1208,8 @@ class Nursery(metaclass=NoPublicConstructor):
                 if not self._strict_exception_groups and len(self._pending_excs) == 1:
                     return self._pending_excs[0]
                 exception = BaseExceptionGroup(
-                    "Exceptions from Trio nursery", self._pending_excs
+                    "Exceptions from Trio nursery",
+                    self._pending_excs,
                 )
                 if not self._strict_exception_groups:
                     exception.add_note(NONSTRICT_EXCEPTIONGROUP_NOTE)
@@ -1321,11 +1326,15 @@ class Nursery(metaclass=NoPublicConstructor):
                 # *this* nursery's exceptiongroup
                 async with open_nursery(strict_exception_groups=True) as old_nursery:
                     task_status: _TaskStatus[object | None] = _TaskStatus(
-                        old_nursery, self
+                        old_nursery,
+                        self,
                     )
                     thunk = functools.partial(async_fn, task_status=task_status)
                     task = GLOBAL_RUN_CONTEXT.runner.spawn_impl(
-                        thunk, args, old_nursery, name
+                        thunk,
+                        args,
+                        old_nursery,
+                        name,
                     )
                     task._eventual_parent_nursery = self
                     # Wait for either TaskStatus.started or an exception to
@@ -1336,7 +1345,7 @@ class Nursery(metaclass=NoPublicConstructor):
                 raise TrioInternalError(
                     "Internal nursery should not have multiple tasks. This can be "
                     'caused by the user managing to access the "old" nursery in '
-                    "`task_status` and spawning tasks in it."
+                    "`task_status` and spawning tasks in it.",
                 ) from exc
 
             # If we get here, then the child either got reparented or exited
@@ -1625,7 +1634,8 @@ class GuestState:  # type: ignore[misc]
 
         # Optimization: try to skip going into the thread if we can avoid it
         events_outcome: Value[EventResult] | Error = capture(
-            self.runner.io_manager.get_events, 0
+            self.runner.io_manager.get_events,
+            0,
         )
         if timeout <= 0 or isinstance(events_outcome, Error) or events_outcome.value:
             # No need to go into the thread
@@ -1897,7 +1907,7 @@ class Runner:  # type: ignore[misc]
                 # traceback frame included
                 raise RuntimeError(
                     "Cancel scope stack corrupted: cancel scope surrounding "
-                    f"{task!r} was closed before the task exited\n{MISNESTING_ADVICE}"
+                    f"{task!r} was closed before the task exited\n{MISNESTING_ADVICE}",
                 )
             except RuntimeError as new_exc:
                 if isinstance(outcome, Error):
@@ -1989,7 +1999,12 @@ class Runner:  # type: ignore[misc]
 
         """
         return self.spawn_impl(
-            async_fn, args, self.system_nursery, name, system_task=True, context=context
+            async_fn,
+            args,
+            self.system_nursery,
+            name,
+            system_task=True,
+            context=context,
         )
 
     async def init(
@@ -2005,7 +2020,10 @@ class Runner:  # type: ignore[misc]
                 async with open_nursery() as main_task_nursery:
                     try:
                         self.main_task = self.spawn_impl(
-                            async_fn, args, main_task_nursery, None
+                            async_fn,
+                            args,
+                            main_task_nursery,
+                            None,
                         )
                     except BaseException as exc:
                         self.main_task_outcome = Error(exc)
@@ -2499,7 +2517,8 @@ def start_guest_run(  # type: ignore[misc]
     # this time, so it shouldn't be possible to get an exception here,
     # except for a TrioInternalError.
     next_send = cast(
-        EventResult, None
+        EventResult,
+        None,
     )  # First iteration must be `None`, every iteration after that is EventResult
     for _tick in range(5):  # expected need is 2 iterations + leave some wiggle room
         if runner.system_nursery is not None:
@@ -2509,13 +2528,13 @@ def start_guest_run(  # type: ignore[misc]
             timeout = guest_state.unrolled_run_gen.send(next_send)
         except StopIteration:  # pragma: no cover
             raise TrioInternalError(
-                "Guest runner exited before system nursery was initialized"
+                "Guest runner exited before system nursery was initialized",
             ) from None
         if timeout != 0:  # pragma: no cover
             guest_state.unrolled_run_gen.throw(
                 TrioInternalError(
-                    "Guest runner blocked before system nursery was initialized"
-                )
+                    "Guest runner blocked before system nursery was initialized",
+                ),
             )
         # next_send should be the return value of
         # IOManager.get_events() if no I/O was waiting, which is
@@ -2529,8 +2548,8 @@ def start_guest_run(  # type: ignore[misc]
         guest_state.unrolled_run_gen.throw(
             TrioInternalError(
                 "Guest runner yielded too many times before "
-                "system nursery was initialized"
-            )
+                "system nursery was initialized",
+            ),
         )
 
     guest_state.unrolled_run_next_send = Value(next_send)
@@ -2563,7 +2582,11 @@ def unrolled_run(
             runner.instruments.call("before_run")
         runner.clock.start_clock()
         runner.init_task = runner.spawn_impl(
-            runner.init, (async_fn, args), None, "<init>", system_task=True
+            runner.init,
+            (async_fn, args),
+            None,
+            "<init>",
+            system_task=True,
         )
 
         # You know how people talk about "event loops"? This 'while' loop right
@@ -2741,7 +2764,7 @@ def unrolled_run(
                             f"trio.run received unrecognized yield message {msg!r}. "
                             "Are you trying to use a library written for some "
                             "other framework like asyncio? That won't work "
-                            "without some kind of compatibility shim."
+                            "without some kind of compatibility shim.",
                         )
                         # The foreign library probably doesn't adhere to our
                         # protocol of unwrapping whatever outcome gets sent in.
@@ -2765,7 +2788,7 @@ def unrolled_run(
         warnings.warn(
             RuntimeWarning(
                 "Trio guest run got abandoned without properly finishing... "
-                "weird stuff might happen"
+                "weird stuff might happen",
             ),
             stacklevel=1,
         )

@@ -113,7 +113,9 @@ class TooSlowError(Exception):
 
 @contextmanager
 def fail_at(
-    deadline: float, *, shield: bool = False
+    deadline: float,
+    *,
+    shield: bool = False,
 ) -> Generator[trio.CancelScope, None, None]:
     """Creates a cancel scope with the given deadline, and raises an error if it
     is actually cancelled.
@@ -145,7 +147,9 @@ def fail_at(
 
 @contextmanager
 def fail_after(
-    seconds: float, *, shield: bool = False
+    seconds: float,
+    *,
+    shield: bool = False,
 ) -> Generator[trio.CancelScope, None, None]:
     """Creates a cancel scope with the given timeout, and raises an error if
     it is actually cancelled.

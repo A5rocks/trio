@@ -55,7 +55,7 @@ def _ensure_mypy_cache_updated() -> None:
                 "--no-error-summary",
                 "-c",
                 "import trio",
-            ]
+            ],
         )
         assert not result[1]  # stderr
         assert not result[0]  # stdout
@@ -72,7 +72,8 @@ def test_core_is_properly_reexported() -> None:
         found = 0
         for source in sources:
             if symbol in dir(source) and getattr(source, symbol) is getattr(
-                _core, symbol
+                _core,
+                symbol,
             ):
                 found += 1
         print(symbol, found)
@@ -91,7 +92,8 @@ def class_is_final(cls: type) -> bool:
 
 
 def iter_modules(
-    module: types.ModuleType, only_public: bool
+    module: types.ModuleType,
+    only_public: bool,
 ) -> Iterator[types.ModuleType]:
     yield module
     for name, class_ in module.__dict__.items():
@@ -126,7 +128,7 @@ PUBLIC_MODULE_NAMES = [m.__name__ for m in PUBLIC_MODULES]
 @pytest.mark.parametrize("tool", ["pylint", "jedi", "mypy", "pyright_verifytypes"])
 @pytest.mark.filterwarnings(
     # https://github.com/pypa/setuptools/issues/3274
-    "ignore:module 'sre_constants' is deprecated:DeprecationWarning"
+    "ignore:module 'sre_constants' is deprecated:DeprecationWarning",
 )
 def test_static_tool_sees_all_symbols(tool: str, modname: str, tmp_path: Path) -> None:
     module = importlib.import_module(modname)
@@ -205,7 +207,8 @@ def test_static_tool_sees_all_symbols(tool: str, modname: str, tmp_path: Path) -
         import subprocess
 
         res = subprocess.run(
-            ["pyright", f"--verifytypes={modname}", "--outputjson"], capture_output=True
+            ["pyright", f"--verifytypes={modname}", "--outputjson"],
+            capture_output=True,
         )
         current_result = json.loads(res.stdout)
 
@@ -250,7 +253,9 @@ def test_static_tool_sees_all_symbols(tool: str, modname: str, tmp_path: Path) -
 @pytest.mark.parametrize("module_name", PUBLIC_MODULE_NAMES)
 @pytest.mark.parametrize("tool", ["jedi", "mypy"])
 def test_static_tool_sees_class_members(
-    tool: str, module_name: str, tmp_path: Path
+    tool: str,
+    module_name: str,
+    tmp_path: Path,
 ) -> None:
     module = PUBLIC_MODULES[PUBLIC_MODULE_NAMES.index(module_name)]
 
@@ -372,7 +377,7 @@ def test_static_tool_sees_class_members(
                 skip_if_optional_else_raise(error)
 
             script = jedi.Script(
-                f"from {module_name} import {class_name}; {class_name}."
+                f"from {module_name} import {class_name}; {class_name}.",
             )
             completions = script.complete()
             static_names = no_hidden(c.name for c in completions) - ignore_names

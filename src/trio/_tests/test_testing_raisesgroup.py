@@ -21,7 +21,7 @@ def test_raises_group() -> None:
     with pytest.raises(
         ValueError,
         match=wrap_escape(
-            f'Invalid argument "{TypeError()!r}" must be exception type, Matcher, or RaisesGroup.'
+            f'Invalid argument "{TypeError()!r}" must be exception type, Matcher, or RaisesGroup.',
         ),
     ):
         RaisesGroup(TypeError())
@@ -89,7 +89,8 @@ def test_flatten_subgroups() -> None:
         raise ExceptionGroup("", (ExceptionGroup("", (ValueError(),)),))
     with RaisesGroup(RaisesGroup(ValueError, flatten_subgroups=True)):
         raise ExceptionGroup(
-            "", (ExceptionGroup("", (ExceptionGroup("", (ValueError(),)),)),)
+            "",
+            (ExceptionGroup("", (ExceptionGroup("", (ValueError(),)),)),),
         )
     with pytest.raises(ExceptionGroup):
         with RaisesGroup(RaisesGroup(ValueError, flatten_subgroups=True)):
@@ -111,7 +112,8 @@ def test_catch_unwrapped_exceptions() -> None:
 
     # expecting multiple unwrapped exceptions is not possible
     with pytest.raises(
-        ValueError, match="^You cannot specify multiple exceptions with"
+        ValueError,
+        match="^You cannot specify multiple exceptions with",
     ):
         RaisesGroup(SyntaxError, ValueError, allow_unwrapped=True)  # type: ignore[call-overload]
     # if users want one of several exception types they need to use a Matcher
@@ -240,7 +242,8 @@ def test_message() -> None:
     check_message("ExceptionGroup(ValueError)", RaisesGroup(ValueError))
     # multiple exceptions
     check_message(
-        "ExceptionGroup(ValueError, ValueError)", RaisesGroup(ValueError, ValueError)
+        "ExceptionGroup(ValueError, ValueError)",
+        RaisesGroup(ValueError, ValueError),
     )
     # nested
     check_message(
@@ -254,12 +257,14 @@ def test_message() -> None:
         RaisesGroup(Matcher(ValueError, "my_str")),
     )
     check_message(
-        "ExceptionGroup(Matcher(match='my_str'))", RaisesGroup(Matcher(match="my_str"))
+        "ExceptionGroup(Matcher(match='my_str'))",
+        RaisesGroup(Matcher(match="my_str")),
     )
 
     # BaseExceptionGroup
     check_message(
-        "BaseExceptionGroup(KeyboardInterrupt)", RaisesGroup(KeyboardInterrupt)
+        "BaseExceptionGroup(KeyboardInterrupt)",
+        RaisesGroup(KeyboardInterrupt),
     )
     # BaseExceptionGroup with type inside Matcher
     check_message(
@@ -280,7 +285,8 @@ def test_message() -> None:
 
 def test_matcher() -> None:
     with pytest.raises(
-        ValueError, match="^You must specify at least one parameter to match on.$"
+        ValueError,
+        match="^You must specify at least one parameter to match on.$",
     ):
         Matcher()  # type: ignore[call-overload]
     with pytest.raises(

@@ -66,7 +66,9 @@ class FakeHostnameResolver(trio.abc.HostnameResolver):
         return [(AF_INET, SOCK_STREAM, IPPROTO_TCP, "", self.sockaddr)]
 
     async def getnameinfo(
-        self, sockaddr: tuple[str, int] | tuple[str, int, int, int], flags: int
+        self,
+        sockaddr: tuple[str, int] | tuple[str, int, int, int],
+        flags: int,
     ) -> NoReturn:  # pragma: no cover
         raise NotImplementedError
 
@@ -81,7 +83,7 @@ async def test_open_ssl_over_tcp_stream_and_everything_else(
         # according to current type hints, and probably for good reason. But there should
         # maybe be a different wrapper class/function that could be used instead?
         value = await nursery.start(
-            partial(serve_ssl_over_tcp, echo_handler, 0, SERVER_CTX, host="127.0.0.1")
+            partial(serve_ssl_over_tcp, echo_handler, 0, SERVER_CTX, host="127.0.0.1"),
         )
         assert isinstance(value, list)
         res = cast(list[SSLListener[SocketListener]], value)  # type: ignore[type-var]
@@ -104,7 +106,9 @@ async def test_open_ssl_over_tcp_stream_and_everything_else(
             # We have the trust but not the hostname
             # (checks custom ssl_context + hostname checking)
             stream = await open_ssl_over_tcp_stream(
-                "xyzzy.example.org", 80, ssl_context=client_ctx
+                "xyzzy.example.org",
+                80,
+                ssl_context=client_ctx,
             )
             async with stream:
                 with pytest.raises(trio.BrokenResourceError):
@@ -112,7 +116,9 @@ async def test_open_ssl_over_tcp_stream_and_everything_else(
 
             # This one should work!
             stream = await open_ssl_over_tcp_stream(
-                "trio-test-1.example.org", 80, ssl_context=client_ctx
+                "trio-test-1.example.org",
+                80,
+                ssl_context=client_ctx,
             )
             async with stream:
                 assert isinstance(stream, trio.SSLStream)
@@ -148,7 +154,10 @@ async def test_open_ssl_over_tcp_listeners() -> None:
         assert not listener._https_compatible
 
     (listener,) = await open_ssl_over_tcp_listeners(
-        0, SERVER_CTX, host="127.0.0.1", https_compatible=True
+        0,
+        SERVER_CTX,
+        host="127.0.0.1",
+        https_compatible=True,
     )
     async with listener:
         assert listener._https_compatible

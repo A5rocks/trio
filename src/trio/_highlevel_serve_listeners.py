@@ -141,5 +141,5 @@ async def serve_listeners(  # type: ignore[misc]
         task_status.started(listeners)
 
     raise AssertionError(
-        "_serve_one_listener should never complete"
+        "_serve_one_listener should never complete",
     )  # pragma: no cover

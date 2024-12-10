@@ -55,7 +55,10 @@ def _compute_backlog(backlog: int | None) -> int:
 
 
 async def open_tcp_listeners(
-    port: int, *, host: str | bytes | None = None, backlog: int | None = None
+    port: int,
+    *,
+    host: str | bytes | None = None,
+    backlog: int | None = None,
 ) -> list[trio.SocketListener]:
     """Create :class:`SocketListener` objects to listen for TCP connections.
 
@@ -109,7 +112,10 @@ async def open_tcp_listeners(
     computed_backlog = _compute_backlog(backlog)
 
     addresses = await tsocket.getaddrinfo(
-        host, port, type=tsocket.SOCK_STREAM, flags=tsocket.AI_PASSIVE
+        host,
+        port,
+        type=tsocket.SOCK_STREAM,
+        flags=tsocket.AI_PASSIVE,
     )
 
     listeners = []
@@ -156,7 +162,8 @@ async def open_tcp_listeners(
             "socket that that address could use"
         )
         raise OSError(errno.EAFNOSUPPORT, msg) from ExceptionGroup(
-            msg, unsupported_address_families
+            msg,
+            unsupported_address_families,
         )
 
     return listeners
@@ -237,5 +244,8 @@ async def serve_tcp(
     """
     listeners = await trio.open_tcp_listeners(port, host=host, backlog=backlog)
     await trio.serve_listeners(
-        handler, listeners, handler_nursery=handler_nursery, task_status=task_status
+        handler,
+        listeners,
+        handler_nursery=handler_nursery,
+        task_status=task_status,
     )

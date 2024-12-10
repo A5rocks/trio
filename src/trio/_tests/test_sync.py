@@ -496,7 +496,9 @@ lock_factory_names = [
 ]
 
 generic_lock_test = pytest.mark.parametrize(
-    "lock_factory", lock_factories, ids=lock_factory_names
+    "lock_factory",
+    lock_factories,
+    ids=lock_factory_names,
 )
 
 LockLike: TypeAlias = Union[
@@ -614,7 +616,7 @@ async def test_lock_multiple_acquire() -> None:
         Matcher(
             trio.BrokenResourceError,
             match="^Owner of this lock exited without releasing: ",
-        )
+        ),
     ):
         async with trio.open_nursery() as nursery:
             nursery.start_soon(lock.acquire)
