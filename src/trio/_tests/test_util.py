@@ -235,12 +235,7 @@ def test_fixup_module_metadata() -> None:
 
     # We recurse into classes.
     mod.SomeClass = type(  # type: ignore[attr-defined]
-        "SomeClass",
-        (),
-        {
-            "__init__": lambda self: None,
-            "method": lambda self: None,
-        },
+        "SomeClass", (), {"__init__": lambda self: None, "method": lambda self: None}
     )
     # Reference loop is fine.
     mod.SomeClass.recursion = mod.SomeClass  # type: ignore[attr-defined]

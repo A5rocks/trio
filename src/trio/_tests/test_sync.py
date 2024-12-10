@@ -250,9 +250,7 @@ def test_Semaphore_bounded() -> None:
 
 
 @pytest.mark.parametrize("lockcls", [Lock, StrictFIFOLock], ids=lambda fn: fn.__name__)
-async def test_Lock_and_StrictFIFOLock(
-    lockcls: type[Lock | StrictFIFOLock],
-) -> None:
+async def test_Lock_and_StrictFIFOLock(lockcls: type[Lock | StrictFIFOLock]) -> None:
     l = lockcls()  # noqa
     assert not l.locked()
 
@@ -498,9 +496,7 @@ lock_factory_names = [
 ]
 
 generic_lock_test = pytest.mark.parametrize(
-    "lock_factory",
-    lock_factories,
-    ids=lock_factory_names,
+    "lock_factory", lock_factories, ids=lock_factory_names
 )
 
 LockLike: TypeAlias = Union[
@@ -618,7 +614,7 @@ async def test_lock_multiple_acquire() -> None:
         Matcher(
             trio.BrokenResourceError,
             match="^Owner of this lock exited without releasing: ",
-        ),
+        )
     ):
         async with trio.open_nursery() as nursery:
             nursery.start_soon(lock.acquire)
@@ -633,11 +629,7 @@ async def test_lock_handover() -> None:
 
     # this task acquires the lock
     lock.acquire_nowait()
-    assert GLOBAL_PARKING_LOT_BREAKER == {
-        _core.current_task(): [
-            lock._lot,
-        ],
-    }
+    assert GLOBAL_PARKING_LOT_BREAKER == {_core.current_task(): [lock._lot]}
 
     async with trio.open_nursery() as nursery:
         nursery.start_soon(lock.acquire)

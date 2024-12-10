@@ -54,10 +54,7 @@ def _is_halfclosable(stream: SendStream) -> TypeGuard[HalfCloseableStream]:
 
 @final
 @attrs.define(eq=False, slots=False)
-class StapledStream(
-    HalfCloseableStream,
-    Generic[SendStreamT, ReceiveStreamT],
-):
+class StapledStream(HalfCloseableStream, Generic[SendStreamT, ReceiveStreamT]):
     """This class `staples <https://en.wikipedia.org/wiki/Staple_(fastener)>`__
     together two unidirectional streams to make single bidirectional stream.
 

@@ -59,9 +59,7 @@ async def open_ssl_over_tcp_stream(
 
     """
     tcp_stream = await trio.open_tcp_stream(
-        host,
-        port,
-        happy_eyeballs_delay=happy_eyeballs_delay,
+        host, port, happy_eyeballs_delay=happy_eyeballs_delay
     )
     if ssl_context is None:
         ssl_context = ssl.create_default_context()
@@ -70,10 +68,7 @@ async def open_ssl_over_tcp_stream(
             ssl_context.options &= ~ssl.OP_IGNORE_UNEXPECTED_EOF
 
     return trio.SSLStream(
-        tcp_stream,
-        ssl_context,
-        server_hostname=host,
-        https_compatible=https_compatible,
+        tcp_stream, ssl_context, server_hostname=host, https_compatible=https_compatible
     )
 
 
@@ -166,15 +161,8 @@ async def serve_ssl_over_tcp(
 
     """
     listeners = await trio.open_ssl_over_tcp_listeners(
-        port,
-        ssl_context,
-        host=host,
-        https_compatible=https_compatible,
-        backlog=backlog,
+        port, ssl_context, host=host, https_compatible=https_compatible, backlog=backlog
     )
     await trio.serve_listeners(
-        handler,
-        listeners,
-        handler_nursery=handler_nursery,
-        task_status=task_status,
+        handler, listeners, handler_nursery=handler_nursery, task_status=task_status
     )

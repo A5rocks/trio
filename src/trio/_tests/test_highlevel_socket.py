@@ -30,8 +30,7 @@ async def test_SocketStream_basics() -> None:
     # DGRAM socket bad
     with tsocket.socket(type=tsocket.SOCK_DGRAM) as sock:
         with pytest.raises(
-            ValueError,
-            match="^SocketStream requires a SOCK_STREAM socket$",
+            ValueError, match="^SocketStream requires a SOCK_STREAM socket$"
         ):
             # TODO: does not raise an error?
             SocketStream(sock)
@@ -134,10 +133,7 @@ async def fill_stream(s: SocketStream) -> None:
 
 
 async def test_SocketStream_generic() -> None:
-    async def stream_maker() -> tuple[
-        SocketStream,
-        SocketStream,
-    ]:
+    async def stream_maker() -> tuple[SocketStream, SocketStream]:
         left, right = tsocket.socketpair()
         return SocketStream(left), SocketStream(right)
 
@@ -162,8 +158,7 @@ async def test_SocketListener() -> None:
     with tsocket.socket(type=tsocket.SOCK_DGRAM) as s:
         await s.bind(("127.0.0.1", 0))
         with pytest.raises(
-            ValueError,
-            match="^SocketListener requires a SOCK_STREAM socket$",
+            ValueError, match="^SocketListener requires a SOCK_STREAM socket$"
         ) as excinfo:
             SocketListener(s)
         excinfo.match(r".*SOCK_STREAM")
@@ -174,8 +169,7 @@ async def test_SocketListener() -> None:
         with tsocket.socket() as s:
             await s.bind(("127.0.0.1", 0))
             with pytest.raises(
-                ValueError,
-                match="^SocketListener requires a listening socket$",
+                ValueError, match="^SocketListener requires a listening socket$"
             ) as excinfo:
                 SocketListener(s)
             excinfo.match(r".*listen")
@@ -237,39 +231,22 @@ async def test_SocketListener_accept_errors() -> None:
 
         @overload
         def getsockopt(  # noqa: F811
-            self,
-            /,
-            level: int,
-            optname: int,
-            buflen: int,
+            self, /, level: int, optname: int, buflen: int
         ) -> bytes: ...
 
         def getsockopt(  # noqa: F811
-            self,
-            /,
-            level: int,
-            optname: int,
-            buflen: int | None = None,
+            self, /, level: int, optname: int, buflen: int | None = None
         ) -> int | bytes:
             return True
 
         @overload
         def setsockopt(
-            self,
-            /,
-            level: int,
-            optname: int,
-            value: int | Buffer,
+            self, /, level: int, optname: int, value: int | Buffer
         ) -> None: ...
 
         @overload
         def setsockopt(  # noqa: F811
-            self,
-            /,
-            level: int,
-            optname: int,
-            value: None,
-            optlen: int,
+            self, /, level: int, optname: int, value: None, optlen: int
         ) -> None: ...
 
         def setsockopt(  # noqa: F811
@@ -302,7 +279,7 @@ async def test_SocketListener_accept_errors() -> None:
             OSError(errno.EFAULT, "attempt to write to read-only memory"),
             OSError(errno.ENOBUFS, "out of buffers"),
             fake_server_sock,
-        ],
+        ]
     )
 
     listener = SocketListener(fake_listen_sock)

@@ -182,14 +182,9 @@ async def test_timeouts_raise_value_error() -> None:
 
     nan = float("nan")
 
-    for fun, val in (
-        (sleep, -1),
-        (sleep, nan),
-        (sleep_until, nan),
-    ):
+    for fun, val in ((sleep, -1), (sleep, nan), (sleep_until, nan)):
         with pytest.raises(
-            ValueError,
-            match="^(deadline|`seconds`) must (not )*be (non-negative|NaN)$",
+            ValueError, match="^(deadline|`seconds`) must (not )*be (non-negative|NaN)$"
         ):
             await fun(val)
 
@@ -202,8 +197,7 @@ async def test_timeouts_raise_value_error() -> None:
         (move_on_at, nan),
     ):
         with pytest.raises(
-            ValueError,
-            match="^(deadline|`seconds`) must (not )*be (non-negative|NaN)$",
+            ValueError, match="^(deadline|`seconds`) must (not )*be (non-negative|NaN)$"
         ):
             with cm(val):
                 pass  # pragma: no cover

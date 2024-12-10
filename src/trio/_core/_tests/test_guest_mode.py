@@ -14,12 +14,7 @@ import weakref
 from collections.abc import AsyncGenerator, Awaitable, Callable, Sequence
 from functools import partial
 from math import inf
-from typing import (
-    TYPE_CHECKING,
-    NoReturn,
-    TypeVar,
-    cast,
-)
+from typing import TYPE_CHECKING, NoReturn, TypeVar, cast
 
 import pytest
 import sniffio
@@ -64,8 +59,7 @@ def trivial_guest_run(
         nonlocal todo
         if host_thread is threading.current_thread():  # pragma: no cover
             crash = partial(
-                pytest.fail,
-                "run_sync_soon_threadsafe called from host thread",
+                pytest.fail, "run_sync_soon_threadsafe called from host thread"
             )
             todo.put(("run", crash))
         todo.put(("run", fn))
@@ -74,8 +68,7 @@ def trivial_guest_run(
         nonlocal todo
         if host_thread is not threading.current_thread():  # pragma: no cover
             crash = partial(
-                pytest.fail,
-                "run_sync_soon_not_threadsafe called from worker thread",
+                pytest.fail, "run_sync_soon_not_threadsafe called from worker thread"
             )
             todo.put(("run", crash))
         todo.put(("run", fn))
@@ -195,9 +188,7 @@ def test_guest_is_initialized_when_start_returns() -> None:
     # are raised out of start_guest_run, not out of the done_callback
     with pytest.raises(trio.TrioInternalError):
         trivial_guest_run(
-            trio_main,
-            clock=BadClock(),
-            in_host_after_start=after_start_never_runs,
+            trio_main, clock=BadClock(), in_host_after_start=after_start_never_runs
         )
 
 
@@ -348,7 +339,7 @@ def test_host_wakeup_doesnt_trigger_wait_all_tasks_blocked() -> None:
                 await trio.testing.wait_all_tasks_blocked(cushion=9999)
                 raise AssertionError(  # pragma: no cover
                     "wait_all_tasks_blocked should *not* return normally, "
-                    "only by cancellation.",
+                    "only by cancellation."
                 )
             assert watb_cscope.cancelled_caught
 
@@ -516,8 +507,7 @@ def test_guest_mode_on_asyncio() -> None:
         raise AssertionError("should never be reached")  # pragma: no cover
 
     async def aio_pingpong(
-        from_trio: asyncio.Queue[int],
-        to_trio: MemorySendChannel[int],
+        from_trio: asyncio.Queue[int], to_trio: MemorySendChannel[int]
     ) -> None:
         print("aio_pingpong!")
 
@@ -556,8 +546,7 @@ def test_guest_mode_on_asyncio() -> None:
 
 
 def test_guest_mode_internal_errors(
-    monkeypatch: pytest.MonkeyPatch,
-    recwarn: pytest.WarningsRecorder,
+    monkeypatch: pytest.MonkeyPatch, recwarn: pytest.WarningsRecorder
 ) -> None:
     with monkeypatch.context() as m:
 
@@ -584,8 +573,7 @@ def test_guest_mode_internal_errors(
             old_get_events = trio._core._run.TheIOManager.get_events
 
             def bad_get_events(
-                self: trio._core._run.TheIOManager,
-                timeout: float,
+                self: trio._core._run.TheIOManager, timeout: float
             ) -> trio._core._run.EventResult:
                 if threading.current_thread() is not t:
                     raise ValueError("oh no!")

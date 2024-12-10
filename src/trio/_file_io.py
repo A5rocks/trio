@@ -469,16 +469,8 @@ async def open_file(
     """
     _file = wrap_file(
         await trio.to_thread.run_sync(
-            io.open,
-            file,
-            mode,
-            buffering,
-            encoding,
-            errors,
-            newline,
-            closefd,
-            opener,
-        ),
+            io.open, file, mode, buffering, encoding, errors, newline, closefd, opener
+        )
     )
     return _file
 
@@ -507,7 +499,7 @@ def wrap_file(file: FileT) -> AsyncIOWrapper[FileT]:
     if not (has("close") and (has("read") or has("write"))):
         raise TypeError(
             f"{file} does not implement required duck-file methods: "
-            "close and (read or write)",
+            "close and (read or write)"
         )
 
     return AsyncIOWrapper(file)

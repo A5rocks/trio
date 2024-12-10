@@ -101,9 +101,7 @@ def test_export(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_endtoend(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     import trio._tools.mypy_annotate as mypy_annotate
 
@@ -119,7 +117,7 @@ Found 3 errors in 29 files
         monkeypatch.setattr(sys, "stdin", io.StringIO(inp_text))
 
         mypy_annotate.main(
-            ["--dumpfile", str(result_file), "--platform", "SomePlatform"],
+            ["--dumpfile", str(result_file), "--platform", "SomePlatform"]
         )
 
     std = capsys.readouterr()

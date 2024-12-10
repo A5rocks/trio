@@ -55,7 +55,7 @@ def socketpair() -> Generator[SocketPair, None, None]:
 
 
 def also_using_fileno(
-    fn: Callable[[stdlib_socket.socket | int], RetT],
+    fn: Callable[[stdlib_socket.socket | int], RetT]
 ) -> list[Callable[[stdlib_socket.socket], RetT]]:
     def fileno_wrapper(fileobj: stdlib_socket.socket) -> RetT:
         return fn(fileobj.fileno())
@@ -92,9 +92,7 @@ notify_closing_test = pytest.mark.parametrize(
 @read_socket_test
 @write_socket_test
 async def test_wait_basic(
-    socketpair: SocketPair,
-    wait_readable: WaitSocket,
-    wait_writable: WaitSocket,
+    socketpair: SocketPair, wait_readable: WaitSocket, wait_writable: WaitSocket
 ) -> None:
     a, b = socketpair
 
@@ -218,9 +216,7 @@ async def test_interrupted_by_close(
 @read_socket_test
 @write_socket_test
 async def test_socket_simultaneous_read_write(
-    socketpair: SocketPair,
-    wait_readable: WaitSocket,
-    wait_writable: WaitSocket,
+    socketpair: SocketPair, wait_readable: WaitSocket, wait_writable: WaitSocket
 ) -> None:
     record: list[str] = []
 
@@ -250,9 +246,7 @@ async def test_socket_simultaneous_read_write(
 @read_socket_test
 @write_socket_test
 async def test_socket_actual_streaming(
-    socketpair: SocketPair,
-    wait_readable: WaitSocket,
-    wait_writable: WaitSocket,
+    socketpair: SocketPair, wait_readable: WaitSocket, wait_writable: WaitSocket
 ) -> None:
     a, b = socketpair
 

@@ -64,8 +64,7 @@ def check_matches_with_different_exception_type() -> None:
     # This should probably raise some type error somewhere, since
     # ValueError != KeyboardInterrupt
     e: BaseExceptionGroup[KeyboardInterrupt] = BaseExceptionGroup(
-        "",
-        (KeyboardInterrupt(),),
+        "", (KeyboardInterrupt(),)
     )
     if RaisesGroup(ValueError).matches(e):
         assert_type(e, BaseExceptionGroup[ValueError])
@@ -177,10 +176,7 @@ def check_nested_raisesgroups_contextmanager() -> None:
     # but assert_type reveals the lies
     print(type(excinfo.value))  # would print "ExceptionGroup"
     # typing says it's a BaseExceptionGroup
-    assert_type(
-        excinfo.value,
-        BaseExceptionGroup[RaisesGroup[ValueError]],
-    )
+    assert_type(excinfo.value, BaseExceptionGroup[RaisesGroup[ValueError]])
 
     print(type(excinfo.value.exceptions[0]))  # would print "ExceptionGroup"
     # but type checkers are utterly confused
@@ -193,8 +189,7 @@ def check_nested_raisesgroups_contextmanager() -> None:
 def check_nested_raisesgroups_matches() -> None:
     """Check nested RaisesGroups with .matches"""
     exc: ExceptionGroup[ExceptionGroup[ValueError]] = ExceptionGroup(
-        "",
-        (ExceptionGroup("", (ValueError(),)),),
+        "", (ExceptionGroup("", (ValueError(),)),)
     )
     # has the same problems as check_nested_raisesgroups_contextmanager
     if RaisesGroup(RaisesGroup(ValueError)).matches(exc):

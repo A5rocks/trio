@@ -161,10 +161,7 @@ class Alias:
         return "new hotness method"
 
     old_hotness_method = deprecated_alias(
-        "Alias.old_hotness_method",
-        new_hotness_method,
-        "3.21",
-        issue=1,
+        "Alias.old_hotness_method", new_hotness_method, "3.21", issue=1
     )
 
 
@@ -275,9 +272,5 @@ def test_warning_class() -> None:
 
     with pytest.warns(TrioDeprecationWarning):
         warn_deprecated(
-            "foo",
-            "bar",
-            issue=None,
-            instead=None,
-            use_triodeprecationwarning=True,
+            "foo", "bar", issue=None, instead=None, use_triodeprecationwarning=True
         )

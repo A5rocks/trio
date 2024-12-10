@@ -30,17 +30,12 @@ async def task_requires_kw(a: int, *, b: bool) -> None: ...
 
 
 async def task_startable_1(
-    a: str,
-    *,
-    task_status: TaskStatus[bool] = TASK_STATUS_IGNORED,
+    a: str, *, task_status: TaskStatus[bool] = TASK_STATUS_IGNORED
 ) -> None: ...
 
 
 async def task_startable_2(
-    a: str,
-    b: float,
-    *,
-    task_status: TaskStatus[bool] = TASK_STATUS_IGNORED,
+    a: str, b: float, *, task_status: TaskStatus[bool] = TASK_STATUS_IGNORED
 ) -> None: ...
 
 

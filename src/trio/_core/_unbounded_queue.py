@@ -152,8 +152,7 @@ class UnboundedQueue(Generic[T]):
     def statistics(self) -> UnboundedQueueStatistics:
         """Return an :class:`UnboundedQueueStatistics` object containing debugging information."""
         return UnboundedQueueStatistics(
-            qsize=len(self._data),
-            tasks_waiting=self._lot.statistics().tasks_waiting,
+            qsize=len(self._data), tasks_waiting=self._lot.statistics().tasks_waiting
         )
 
     def __aiter__(self) -> Self:

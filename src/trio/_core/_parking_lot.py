@@ -99,7 +99,7 @@ def add_parking_lot_breaker(task: Task, lot: ParkingLot) -> None:
     """
     if inspect.getcoroutinestate(task.coro) == inspect.CORO_CLOSED:
         raise _core._exceptions.BrokenResourceError(
-            "Attempted to add already exited task as lot breaker.",
+            "Attempted to add already exited task as lot breaker."
         )
     if task not in GLOBAL_PARKING_LOT_BREAKER:
         GLOBAL_PARKING_LOT_BREAKER[task] = [lot]
@@ -113,7 +113,7 @@ def remove_parking_lot_breaker(task: Task, lot: ParkingLot) -> None:
         GLOBAL_PARKING_LOT_BREAKER[task].remove(lot)
     except (KeyError, ValueError):
         raise RuntimeError(
-            "Attempted to remove task as breaker for a lot it is not registered for",
+            "Attempted to remove task as breaker for a lot it is not registered for"
         ) from None
     if not GLOBAL_PARKING_LOT_BREAKER[task]:
         del GLOBAL_PARKING_LOT_BREAKER[task]
@@ -177,7 +177,7 @@ class ParkingLot:
         """
         if self.broken_by:
             raise _core.BrokenResourceError(
-                f"Attempted to park in parking lot broken by {self.broken_by}",
+                f"Attempted to park in parking lot broken by {self.broken_by}"
             )
         task = _core.current_task()
         self._parked[task] = None
@@ -224,10 +224,7 @@ class ParkingLot:
 
     @_core.enable_ki_protection
     def repark(
-        self,
-        new_lot: ParkingLot,
-        *,
-        count: int | float = 1,  # noqa: PYI041
+        self, new_lot: ParkingLot, *, count: int | float = 1  # noqa: PYI041
     ) -> None:
         """Move parked tasks from one :class:`ParkingLot` object to another.
 
@@ -300,7 +297,7 @@ class ParkingLot:
             _core.reschedule(
                 parked_task,
                 outcome.Error(
-                    _core.BrokenResourceError(f"Parking lot broken by {task}"),
+                    _core.BrokenResourceError(f"Parking lot broken by {task}")
                 ),
             )
         self._parked.clear()

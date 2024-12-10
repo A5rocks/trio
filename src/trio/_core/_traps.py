@@ -58,17 +58,14 @@ MessageType: TypeAlias = Union[
 # tracking machinery. Since our traps are public APIs, we make them real async
 # functions, and then this helper takes care of the actual yield:
 @types.coroutine
-def _real_async_yield(
-    obj: MessageType,
-) -> Generator[MessageType, None, None]:
+def _real_async_yield(obj: MessageType) -> Generator[MessageType, None, None]:
     return (yield obj)
 
 
 # Real yield value is from trio's main loop, but type checkers can't
 # understand that, so we cast it to make type checkers understand.
 _async_yield = cast(
-    Callable[[MessageType], Awaitable[outcome.Outcome[object]]],
-    _real_async_yield,
+    Callable[[MessageType], Awaitable[outcome.Outcome[object]]], _real_async_yield
 )
 
 
@@ -107,7 +104,7 @@ class Abort(enum.Enum):
 # with a bad value.
 # Explicit "Any" is not allowed
 async def wait_task_rescheduled(  # type: ignore[misc]
-    abort_func: Callable[[RaiseCancelT], Abort],
+    abort_func: Callable[[RaiseCancelT], Abort]
 ) -> Any:
     """Put the current task to sleep, with cancellation support.
 
@@ -238,13 +235,13 @@ async def permanently_detach_coroutine_object(
     """
     if _run.current_task().child_nurseries:
         raise RuntimeError(
-            "can't permanently detach a coroutine object with open nurseries",
+            "can't permanently detach a coroutine object with open nurseries"
         )
     return await _async_yield(PermanentlyDetachCoroutineObject(final_outcome))
 
 
 async def temporarily_detach_coroutine_object(
-    abort_func: Callable[[RaiseCancelT], Abort],
+    abort_func: Callable[[RaiseCancelT], Abort]
 ) -> object:
     """Temporarily detach the current coroutine object from the Trio
     scheduler.

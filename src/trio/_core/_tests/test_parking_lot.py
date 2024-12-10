@@ -47,8 +47,7 @@ async def test_parking_lot_basic() -> None:
         assert len(record) == 6
 
     check_sequence_matches(
-        record,
-        [{"sleep 0", "sleep 1", "sleep 2"}, {"wake 0", "wake 1", "wake 2"}],
+        record, [{"sleep 0", "sleep 1", "sleep 2"}, {"wake 0", "wake 1", "wake 2"}]
     )
 
     async with _core.open_nursery() as nursery:
@@ -61,14 +60,7 @@ async def test_parking_lot_basic() -> None:
             lot.unpark()
             await wait_all_tasks_blocked()
         # 1-by-1 wakeups are strict FIFO
-        assert record == [
-            "sleep 0",
-            "sleep 1",
-            "sleep 2",
-            "wake 0",
-            "wake 1",
-            "wake 2",
-        ]
+        assert record == ["sleep 0", "sleep 1", "sleep 2", "wake 0", "wake 1", "wake 2"]
 
     # It's legal (but a no-op) to try and unpark while there's nothing parked
     lot.unpark()
@@ -84,23 +76,18 @@ async def test_parking_lot_basic() -> None:
         lot.unpark(count=2)
         await wait_all_tasks_blocked()
         check_sequence_matches(
-            record,
-            ["sleep 0", "sleep 1", "sleep 2", {"wake 0", "wake 1"}],
+            record, ["sleep 0", "sleep 1", "sleep 2", {"wake 0", "wake 1"}]
         )
         lot.unpark_all()
 
     with pytest.raises(
-        ValueError,
-        match=r"^Cannot pop a non-integer number of tasks\.$",
+        ValueError, match=r"^Cannot pop a non-integer number of tasks\.$"
     ):
         lot.unpark(count=1.5)
 
 
 async def cancellable_waiter(
-    name: T,
-    lot: ParkingLot,
-    scopes: dict[T, _core.CancelScope],
-    record: list[str],
+    name: T, lot: ParkingLot, scopes: dict[T, _core.CancelScope], record: list[str]
 ) -> None:
     with _core.CancelScope() as scope:
         scopes[name] = scope
@@ -135,8 +122,7 @@ async def test_parking_lot_cancel() -> None:
         assert len(record) == 6
 
     check_sequence_matches(
-        record,
-        ["sleep 1", "sleep 2", "sleep 3", "cancelled 2", {"wake 1", "wake 3"}],
+        record, ["sleep 1", "sleep 2", "sleep 3", "cancelled 2", {"wake 1", "wake 3"}]
     )
 
 
@@ -174,13 +160,7 @@ async def test_parking_lot_repark() -> None:
         scopes[2].cancel()
         await wait_all_tasks_blocked()
         assert len(lot2) == 1
-        assert record == [
-            "sleep 1",
-            "sleep 2",
-            "sleep 3",
-            "wake 1",
-            "cancelled 2",
-        ]
+        assert record == ["sleep 1", "sleep 2", "sleep 3", "wake 1", "cancelled 2"]
 
         lot2.unpark_all()
         await wait_all_tasks_blocked()
@@ -216,13 +196,7 @@ async def test_parking_lot_repark_with_count() -> None:
         while lot2:
             lot2.unpark()
             await wait_all_tasks_blocked()
-        assert record == [
-            "sleep 1",
-            "sleep 2",
-            "sleep 3",
-            "wake 1",
-            "wake 2",
-        ]
+        assert record == ["sleep 1", "sleep 2", "sleep 3", "wake 1", "wake 2"]
         lot1.unpark_all()
 
 
@@ -268,7 +242,7 @@ async def test_parking_lot_break_parking_tasks() -> None:
 
     # check that parked task errors
     with RaisesGroup(
-        Matcher(_core.BrokenResourceError, match="^Parking lot broken by"),
+        Matcher(_core.BrokenResourceError, match="^Parking lot broken by")
     ):
         async with _core.open_nursery() as nursery:
             nursery.start_soon(bad_parker, lot, cs)
@@ -383,7 +357,7 @@ async def test_parking_lot_break_itself() -> None:
 
     lot = ParkingLot()
     with RaisesGroup(
-        Matcher(_core.BrokenResourceError, match="^Parking lot broken by"),
+        Matcher(_core.BrokenResourceError, match="^Parking lot broken by")
     ):
         async with _core.open_nursery() as nursery:
             child_task = await nursery.start(return_me_and_park, lot)

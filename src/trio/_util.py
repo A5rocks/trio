@@ -7,14 +7,7 @@ import signal
 from abc import ABCMeta
 from collections.abc import Awaitable, Callable, Sequence
 from functools import update_wrapper
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Generic,
-    NoReturn,
-    TypeVar,
-    final as std_final,
-)
+from typing import TYPE_CHECKING, Any, Generic, NoReturn, TypeVar, final as std_final
 
 from sniffio import thread_local as sniffio_loop
 
@@ -56,8 +49,7 @@ def is_main_thread() -> bool:
 # errors for common mistakes. Returns coroutine object.
 ######
 def coroutine_or_error(
-    async_fn: Callable[[Unpack[PosArgsT]], Awaitable[RetT]],
-    *args: Unpack[PosArgsT],
+    async_fn: Callable[[Unpack[PosArgsT]], Awaitable[RetT]], *args: Unpack[PosArgsT]
 ) -> collections.abc.Coroutine[object, NoReturn, RetT]:
     def _return_value_looks_like_wrong_library(value: object) -> bool:
         # Returned by legacy @asyncio.coroutine functions, which includes
@@ -97,7 +89,7 @@ def coroutine_or_error(
                 "Instead, you want (notice the parentheses!):\n"
                 "\n"
                 f"  trio.run({async_fn.__name__}, ...)            # correct!\n"
-                f"  nursery.start_soon({async_fn.__name__}, ...)  # correct!",
+                f"  nursery.start_soon({async_fn.__name__}, ...)  # correct!"
             ) from None
 
         # Give good error for: nursery.start_soon(future)
@@ -106,7 +98,7 @@ def coroutine_or_error(
                 "Trio was expecting an async function, but instead it got "
                 f"{async_fn!r} – are you trying to use a library written for "
                 "asyncio/twisted/tornado or similar? That won't work "
-                "without some sort of compatibility shim.",
+                "without some sort of compatibility shim."
             ) from None
 
         raise
@@ -126,19 +118,19 @@ def coroutine_or_error(
             raise TypeError(
                 f"Trio got unexpected {coro!r} – are you trying to use a "
                 "library written for asyncio/twisted/tornado or similar? "
-                "That won't work without some sort of compatibility shim.",
+                "That won't work without some sort of compatibility shim."
             )
 
         if inspect.isasyncgen(coro):
             raise TypeError(
                 "start_soon expected an async function but got an async "
-                f"generator {coro!r}",
+                f"generator {coro!r}"
             )
 
         # Give good error for: nursery.start_soon(some_sync_fn)
         raise TypeError(
             "Trio expected an async function, but {!r} appears to be "
-            "synchronous".format(getattr(async_fn, "__qualname__", async_fn)),
+            "synchronous".format(getattr(async_fn, "__qualname__", async_fn))
         )
 
     return coro
@@ -179,9 +171,7 @@ class ConflictDetector:
 
 # Explicit "Any" is not allowed
 def async_wraps(  # type: ignore[misc]
-    cls: type[object],
-    wrapped_cls: type[object],
-    attr_name: str,
+    cls: type[object], wrapped_cls: type[object], attr_name: str
 ) -> Callable[[CallT], CallT]:
     """Similar to wraps, but for async wrappers of non-async functions."""
 
@@ -198,8 +188,7 @@ def async_wraps(  # type: ignore[misc]
 
 
 def fixup_module_metadata(
-    module_name: str,
-    namespace: collections.abc.Mapping[str, object],
+    module_name: str, namespace: collections.abc.Mapping[str, object]
 ) -> None:
     seen_ids: set[int] = set()
 
@@ -250,10 +239,7 @@ class generic_function(Generic[RetT]):
     """
 
     # Explicit .../"Any" is not allowed
-    def __init__(  # type: ignore[misc]
-        self,
-        fn: Callable[..., RetT],
-    ) -> None:
+    def __init__(self, fn: Callable[..., RetT]) -> None:  # type: ignore[misc]
         update_wrapper(self, fn)
         self._fn = fn
 
@@ -320,7 +306,7 @@ class NoPublicConstructor(ABCMeta):
 
     def __call__(cls, *args: object, **kwargs: object) -> None:
         raise TypeError(
-            f"{cls.__module__}.{cls.__qualname__} has no public constructor",
+            f"{cls.__module__}.{cls.__qualname__} has no public constructor"
         )
 
     def _create(cls: type[T], *args: object, **kwargs: object) -> T:

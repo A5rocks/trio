@@ -8,12 +8,7 @@ import threading
 import time
 import weakref
 from functools import partial
-from typing import (
-    TYPE_CHECKING,
-    NoReturn,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, NoReturn, TypeVar, Union
 
 import pytest
 import sniffio
@@ -253,11 +248,7 @@ def _get_thread_name(ident: int | None = None) -> str | None:
     assert pthread_getname_np
 
     # thankfully getname signature doesn't differ between platforms
-    pthread_getname_np.argtypes = [
-        ctypes.c_void_p,
-        ctypes.c_char_p,
-        ctypes.c_size_t,
-    ]
+    pthread_getname_np.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
     pthread_getname_np.restype = ctypes.c_int
 
     name_buffer = ctypes.create_string_buffer(b"", size=16)
@@ -333,8 +324,7 @@ async def test_run_in_worker_thread() -> None:
         raise ValueError(threading.current_thread())
 
     with pytest.raises(
-        ValueError,
-        match=r"^<Thread\(Trio thread \d+, started daemon \d+\)>$",
+        ValueError, match=r"^<Thread\(Trio thread \d+, started daemon \d+\)>$"
     ) as excinfo:
         await to_thread_run_sync(g)
     print(excinfo.value.args)
@@ -402,8 +392,7 @@ async def test_run_in_worker_thread_cancellation() -> None:
 # handled gracefully. (Requires that the thread result machinery be prepared
 # for call_soon to raise RunFinishedError.)
 def test_run_in_worker_thread_abandoned(
-    capfd: pytest.CaptureFixture[str],
-    monkeypatch: pytest.MonkeyPatch,
+    capfd: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(_core._thread_cache, "IDLE_TIMEOUT", 0.01)
 
@@ -443,9 +432,7 @@ def test_run_in_worker_thread_abandoned(
 @pytest.mark.parametrize("cancel", [False, True])
 @pytest.mark.parametrize("use_default_limiter", [False, True])
 async def test_run_in_worker_thread_limiter(
-    MAX: int,
-    cancel: bool,
-    use_default_limiter: bool,
+    MAX: int, cancel: bool, use_default_limiter: bool
 ) -> None:
     # This test is a bit tricky. The goal is to make sure that if we set
     # limiter=CapacityLimiter(MAX), then in fact only MAX threads are ever
@@ -648,7 +635,7 @@ async def test_trio_to_thread_run_sync_expected_error() -> None:
 
 
 trio_test_contextvar: contextvars.ContextVar[str] = contextvars.ContextVar(
-    "trio_test_contextvar",
+    "trio_test_contextvar"
 )
 
 
@@ -672,11 +659,7 @@ async def test_trio_to_thread_run_sync_contextvars() -> None:
         inner_value = trio_test_contextvar.get()
         with pytest.raises(sniffio.AsyncLibraryNotFoundError):
             sniffio.current_async_library()
-        return (
-            parent_value,
-            inner_value,
-            threading.current_thread(),
-        )
+        return (parent_value, inner_value, threading.current_thread())
 
     parent_value, inner_value, child_thread = await to_thread_run_sync(g)
     current_value = trio_test_contextvar.get()
@@ -855,8 +838,7 @@ async def test_trio_from_thread_run_contextvars() -> None:
 def test_run_fn_as_system_task_catched_badly_typed_token() -> None:
     with pytest.raises(RuntimeError):
         from_thread_run_sync(
-            _core.current_time,
-            trio_token="Not TrioTokentype",  # type: ignore[arg-type]
+            _core.current_time, trio_token="Not TrioTokentype"  # type: ignore[arg-type]
         )
 
 
@@ -880,7 +862,7 @@ def test_from_thread_run_during_shutdown() -> None:
             with _core.CancelScope(shield=True):
                 try:
                     await to_thread_run_sync(
-                        partial(from_thread_run, sleep, 0, trio_token=token),
+                        partial(from_thread_run, sleep, 0, trio_token=token)
                     )
                 except _core.RunFinishedError:
                     record.append("finished")

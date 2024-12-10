@@ -393,9 +393,7 @@ async def test_MemorySendStream() -> None:
         record.append("close_hook")
 
     mss2 = MemorySendStream(
-        send_all_hook,
-        wait_send_all_might_not_block_hook,
-        close_hook,
+        send_all_hook, wait_send_all_might_not_block_hook, close_hook
     )
 
     assert mss2.send_all_hook is send_all_hook
@@ -604,10 +602,12 @@ async def test_memory_streams_with_generic_tests() -> None:
 
     await check_one_way_stream(one_way_stream_maker, None)
 
-    async def half_closeable_stream_maker() -> tuple[
-        StapledStream[MemorySendStream, MemoryReceiveStream],
-        StapledStream[MemorySendStream, MemoryReceiveStream],
-    ]:
+    async def half_closeable_stream_maker() -> (
+        tuple[
+            StapledStream[MemorySendStream, MemoryReceiveStream],
+            StapledStream[MemorySendStream, MemoryReceiveStream],
+        ]
+    ):
         return memory_stream_pair()
 
     await check_half_closeable_stream(half_closeable_stream_maker, None)
@@ -619,10 +619,12 @@ async def test_lockstep_streams_with_generic_tests() -> None:
 
     await check_one_way_stream(one_way_stream_maker, one_way_stream_maker)
 
-    async def two_way_stream_maker() -> tuple[
-        StapledStream[SendStream, ReceiveStream],
-        StapledStream[SendStream, ReceiveStream],
-    ]:
+    async def two_way_stream_maker() -> (
+        tuple[
+            StapledStream[SendStream, ReceiveStream],
+            StapledStream[SendStream, ReceiveStream],
+        ]
+    ):
         return lockstep_stream_pair()
 
     await check_two_way_stream(two_way_stream_maker, two_way_stream_maker)
@@ -672,13 +674,10 @@ async def test_open_stream_to_socket_listener() -> None:
 
 def test_trio_test() -> None:
     async def busy_kitchen(
-        *,
-        mock_clock: object,
-        autojump_clock: object,
+        *, mock_clock: object, autojump_clock: object
     ) -> None: ...  # pragma: no cover
 
     with pytest.raises(ValueError, match="^too many clocks spoil the broth!$"):
         trio_test(busy_kitchen)(
-            mock_clock=MockClock(),
-            autojump_clock=MockClock(autojump_threshold=0),
+            mock_clock=MockClock(), autojump_clock=MockClock(autojump_threshold=0)
         )

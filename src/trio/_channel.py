@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from collections import OrderedDict, deque
 from math import inf
-from typing import (
-    TYPE_CHECKING,
-    Generic,
-)
+from typing import TYPE_CHECKING, Generic
 
 import attrs
 from outcome import Error, Value
@@ -81,10 +78,7 @@ def _open_memory_channel(
     if max_buffer_size < 0:
         raise ValueError("max_buffer_size must be >= 0")
     state: MemoryChannelState[T] = MemoryChannelState(max_buffer_size)
-    return (
-        MemorySendChannel[T]._create(state),
-        MemoryReceiveChannel[T]._create(state),
-    )
+    return (MemorySendChannel[T]._create(state), MemoryReceiveChannel[T]._create(state))
 
 
 # This workaround requires python3.9+, once older python versions are not supported
@@ -94,8 +88,7 @@ if TYPE_CHECKING:
     # written as a class so you can say open_memory_channel[int](5)
     class open_memory_channel(tuple["MemorySendChannel[T]", "MemoryReceiveChannel[T]"]):
         def __new__(  # type: ignore[misc]  # "must return a subtype"
-            cls,
-            max_buffer_size: int | float,  # noqa: PYI041
+            cls, max_buffer_size: int | float  # noqa: PYI041
         ) -> tuple[MemorySendChannel[T], MemoryReceiveChannel[T]]:
             return _open_memory_channel(max_buffer_size)
 

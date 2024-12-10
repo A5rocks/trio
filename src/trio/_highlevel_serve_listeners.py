@@ -10,12 +10,7 @@ import trio
 
 # Errors that accept(2) can return, and which indicate that the system is
 # overloaded
-ACCEPT_CAPACITY_ERRNOS = {
-    errno.EMFILE,
-    errno.ENFILE,
-    errno.ENOMEM,
-    errno.ENOBUFS,
-}
+ACCEPT_CAPACITY_ERRNOS = {errno.EMFILE, errno.ENFILE, errno.ENOMEM, errno.ENOBUFS}
 
 # How long to sleep when we get one of those errors
 SLEEP_TIME = 0.100
@@ -146,5 +141,5 @@ async def serve_listeners(  # type: ignore[misc]
         task_status.started(listeners)
 
     raise AssertionError(
-        "_serve_one_listener should never complete",
+        "_serve_one_listener should never complete"
     )  # pragma: no cover

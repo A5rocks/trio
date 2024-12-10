@@ -86,10 +86,7 @@ class _IdRef(weakref.ref[_T]):
     _hash: int
 
     def __new__(
-        cls,
-        ob: _T,
-        callback: Callable[[Self], object] | None = None,
-        /,
+        cls, ob: _T, callback: Callable[[Self], object] | None = None, /
     ) -> Self:
         self: Self = weakref.ref.__new__(cls, ob, callback)
         self._hash = object.__hash__(ob)
@@ -131,7 +128,7 @@ class WeakKeyIdentityDictionary(Generic[_KT, _VT]):
             selfref: weakref.ref[
                 WeakKeyIdentityDictionary[_KT, _VT]
             ] = weakref.ref(  # noqa: B008  # function-call-in-default-argument
-                self,
+                self
             ),
         ) -> None:
             self = selfref()
@@ -150,10 +147,9 @@ class WeakKeyIdentityDictionary(Generic[_KT, _VT]):
         self._data[_IdRef(k, self._remove)] = v
 
 
-_CODE_KI_PROTECTION_STATUS_WMAP: WeakKeyIdentityDictionary[
-    types.CodeType,
-    bool,
-] = WeakKeyIdentityDictionary()
+_CODE_KI_PROTECTION_STATUS_WMAP: WeakKeyIdentityDictionary[types.CodeType, bool] = (
+    WeakKeyIdentityDictionary()
+)
 
 
 # This is to support the async_generator package necessary for aclosing on <3.10

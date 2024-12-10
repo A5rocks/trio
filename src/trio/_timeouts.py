@@ -28,11 +28,7 @@ def move_on_at(deadline: float, *, shield: bool = False) -> trio.CancelScope:
     return trio.CancelScope(deadline=deadline, shield=shield)
 
 
-def move_on_after(
-    seconds: float,
-    *,
-    shield: bool = False,
-) -> trio.CancelScope:
+def move_on_after(seconds: float, *, shield: bool = False) -> trio.CancelScope:
     """Use as a context manager to create a cancel scope whose deadline is
     set to now + *seconds*.
 
@@ -52,10 +48,7 @@ def move_on_after(
         raise ValueError("`seconds` must be non-negative")
     if math.isnan(seconds):
         raise ValueError("`seconds` must not be NaN")
-    return trio.CancelScope(
-        shield=shield,
-        relative_deadline=seconds,
-    )
+    return trio.CancelScope(shield=shield, relative_deadline=seconds)
 
 
 async def sleep_forever() -> NoReturn:
@@ -120,9 +113,7 @@ class TooSlowError(Exception):
 
 @contextmanager
 def fail_at(
-    deadline: float,
-    *,
-    shield: bool = False,
+    deadline: float, *, shield: bool = False
 ) -> Generator[trio.CancelScope, None, None]:
     """Creates a cancel scope with the given deadline, and raises an error if it
     is actually cancelled.
@@ -154,9 +145,7 @@ def fail_at(
 
 @contextmanager
 def fail_after(
-    seconds: float,
-    *,
-    shield: bool = False,
+    seconds: float, *, shield: bool = False
 ) -> Generator[trio.CancelScope, None, None]:
     """Creates a cancel scope with the given timeout, and raises an error if
     it is actually cancelled.

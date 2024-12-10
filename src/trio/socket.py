@@ -29,7 +29,7 @@ globals().update(
         _name: getattr(_stdlib_socket, _name)
         for _name in _stdlib_socket.__all__  # type: ignore
         if _name.isupper() and _name not in _bad_symbols
-    },
+    }
 )
 
 # import the overwrites
@@ -77,17 +77,13 @@ if sys.implementation.name == "cpython":
     # For android devices, if_nameindex support was introduced in API 24,
     # so it doesn't exist for any version prior.
     with _suppress(ImportError):
-        from socket import (
-            if_nameindex as if_nameindex,
-        )
+        from socket import if_nameindex as if_nameindex
 
 
 # not always available so expose only if
 if sys.platform != "win32" or not _t.TYPE_CHECKING:
     with _suppress(ImportError):
-        from socket import (
-            sethostname as sethostname,
-        )
+        from socket import sethostname as sethostname
 
 if _t.TYPE_CHECKING:
     IP_BIND_ADDRESS_NO_PORT: int

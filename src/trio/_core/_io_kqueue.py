@@ -45,9 +45,7 @@ class KqueueIOManager:
 
     def __attrs_post_init__(self) -> None:
         force_wakeup_event = select.kevent(
-            self._force_wakeup.wakeup_sock,
-            select.KQ_FILTER_READ,
-            select.KQ_EV_ADD,
+            self._force_wakeup.wakeup_sock, select.KQ_FILTER_READ, select.KQ_EV_ADD
         )
         self._kqueue.control([force_wakeup_event], 0)
         self._force_wakeup_fd = self._force_wakeup.wakeup_sock.fileno()
@@ -122,9 +120,7 @@ class KqueueIOManager:
     @contextmanager
     @_public
     def monitor_kevent(
-        self,
-        ident: int,
-        filter: int,
+        self, ident: int, filter: int
     ) -> Iterator[_core.UnboundedQueue[select.kevent]]:
         """TODO: these are implemented, but are currently more of a sketch than
         anything real. See `#26
@@ -133,7 +129,7 @@ class KqueueIOManager:
         key = (ident, filter)
         if key in self._registered:
             raise _core.BusyResourceError(
-                "attempt to register multiple listeners for same ident/filter pair",
+                "attempt to register multiple listeners for same ident/filter pair"
             )
         q = _core.UnboundedQueue[select.kevent]()
         self._registered[key] = q
@@ -144,10 +140,7 @@ class KqueueIOManager:
 
     @_public
     async def wait_kevent(
-        self,
-        ident: int,
-        filter: int,
-        abort_func: Callable[[RaiseCancelT], Abort],
+        self, ident: int, filter: int, abort_func: Callable[[RaiseCancelT], Abort]
     ) -> Abort:
         """TODO: these are implemented, but are currently more of a sketch than
         anything real. See `#26
@@ -156,7 +149,7 @@ class KqueueIOManager:
         key = (ident, filter)
         if key in self._registered:
             raise _core.BusyResourceError(
-                "attempt to register multiple listeners for same ident/filter pair",
+                "attempt to register multiple listeners for same ident/filter pair"
             )
         self._registered[key] = _core.current_task()
 
@@ -169,11 +162,7 @@ class KqueueIOManager:
         # wait_task_rescheduled does not have its return type typed
         return await _core.wait_task_rescheduled(abort)  # type: ignore[no-any-return]
 
-    async def _wait_common(
-        self,
-        fd: int | _HasFileNo,
-        filter: int,
-    ) -> None:
+    async def _wait_common(self, fd: int | _HasFileNo, filter: int) -> None:
         if not isinstance(fd, int):
             fd = fd.fileno()
         flags = select.KQ_EV_ADD | select.KQ_EV_ONESHOT
@@ -290,5 +279,5 @@ class KqueueIOManager:
                 # XX this is an interesting example of a case where being able
                 # to close a queue would be useful...
                 raise NotImplementedError(
-                    "can't close an fd that monitor_kevent is using",
+                    "can't close an fd that monitor_kevent is using"
                 )

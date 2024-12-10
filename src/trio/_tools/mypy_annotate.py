@@ -30,11 +30,7 @@ report_re = re.compile(
     re.VERBOSE,
 )
 
-mypy_to_github = {
-    "error": "error",
-    "warn": "warning",
-    "note": "notice",
-}
+mypy_to_github = {"error": "error", "warn": "warning", "note": "notice"}
 
 
 @attrs.frozen(kw_only=True)
@@ -86,9 +82,7 @@ def main(argv: list[str]) -> None:
     """Look for error messages, and convert the format."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--dumpfile",
-        help="File to write pickled messages to.",
-        required=True,
+        "--dumpfile", help="File to write pickled messages to.", required=True
     )
     parser.add_argument(
         "--platform",

@@ -91,11 +91,7 @@ class Instruments(dict[str, dict[Instrument, None]]):
                 if not instruments:
                     del self[hookname]
 
-    def call(
-        self,
-        hookname: str,
-        *args: object,
-    ) -> None:
+    def call(self, hookname: str, *args: object) -> None:
         """Call hookname(*args) on each applicable instrument.
 
         You must first check whether there are any instruments installed for

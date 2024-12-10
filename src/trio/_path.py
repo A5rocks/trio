@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 
 # Explicit .../"Any" is not allowed
 def _wraps_async(  # type: ignore[misc]
-    wrapped: Callable[..., object],
+    wrapped: Callable[..., object]
 ) -> Callable[[Callable[P, T]], Callable[P, Awaitable[T]]]:
     def decorator(fn: Callable[P, T]) -> Callable[P, Awaitable[T]]:
         async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
@@ -51,7 +51,7 @@ def _wraps_async(  # type: ignore[misc]
 
 
 def _wrap_method(
-    fn: Callable[Concatenate[pathlib.Path, P], T],
+    fn: Callable[Concatenate[pathlib.Path, P], T]
 ) -> Callable[Concatenate[Path, P], Awaitable[T]]:
     @_wraps_async(fn)
     def wrapper(self: Path, /, *args: P.args, **kwargs: P.kwargs) -> T:
@@ -61,7 +61,7 @@ def _wrap_method(
 
 
 def _wrap_method_path(
-    fn: Callable[Concatenate[pathlib.Path, P], pathlib.Path],
+    fn: Callable[Concatenate[pathlib.Path, P], pathlib.Path]
 ) -> Callable[Concatenate[PathT, P], Awaitable[PathT]]:
     @_wraps_async(fn)
     def wrapper(self: PathT, /, *args: P.args, **kwargs: P.kwargs) -> PathT:
@@ -71,7 +71,7 @@ def _wrap_method_path(
 
 
 def _wrap_method_path_iterable(
-    fn: Callable[Concatenate[pathlib.Path, P], Iterable[pathlib.Path]],
+    fn: Callable[Concatenate[pathlib.Path, P], Iterable[pathlib.Path]]
 ) -> Callable[Concatenate[PathT, P], Awaitable[Iterable[PathT]]]:
     @_wraps_async(fn)
     def wrapper(self: PathT, /, *args: P.args, **kwargs: P.kwargs) -> Iterable[PathT]:

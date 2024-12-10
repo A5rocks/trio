@@ -226,9 +226,7 @@ class _Once:
     __slots__ = ("_afn", "_args", "_done", "started")
 
     def __init__(
-        self,
-        afn: Callable[[*Ts], Awaitable[object]],
-        *args: Unpack[Ts],
+        self, afn: Callable[[*Ts], Awaitable[object]], *args: Unpack[Ts]
     ) -> None:
         self._afn = afn
         self._args = args
@@ -386,10 +384,10 @@ class SSLStream(Stream, Generic[T_Stream]):
         # multiple concurrent calls to send_all/wait_send_all_might_not_block
         # or to receive_some.
         self._outer_send_conflict_detector = ConflictDetector(
-            "another task is currently sending data on this SSLStream",
+            "another task is currently sending data on this SSLStream"
         )
         self._outer_recv_conflict_detector = ConflictDetector(
-            "another task is currently receiving data on this SSLStream",
+            "another task is currently receiving data on this SSLStream"
         )
 
         self._estimated_receive_size = STARTING_RECEIVE_SIZE
@@ -424,10 +422,7 @@ class SSLStream(Stream, Generic[T_Stream]):
     }
 
     # Explicit "Any" is not allowed
-    def __getattr__(  # type: ignore[misc]
-        self,
-        name: str,
-    ) -> Any:
+    def __getattr__(self, name: str) -> Any:  # type: ignore[misc]
         if name in self._forwarded:
             if name in self._after_handshake and not self._handshook.done:
                 raise NeedHandshakeError(f"call do_handshake() before calling {name!r}")
@@ -629,8 +624,7 @@ class SSLStream(Stream, Generic[T_Stream]):
                             self._incoming.write_eof()
                         else:
                             self._estimated_receive_size = max(
-                                self._estimated_receive_size,
-                                len(data),
+                                self._estimated_receive_size, len(data)
                             )
                             self._incoming.write(data)
                         self._inner_recv_count += 1

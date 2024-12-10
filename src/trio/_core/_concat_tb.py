@@ -95,11 +95,7 @@ else:
             # no missing test we could add, and no value in coverage nagging
             # us about adding one.
             if (
-                operation.opname
-                in {
-                    "__getattribute__",
-                    "__getattr__",
-                }
+                operation.opname in {"__getattribute__", "__getattr__"}
                 and operation.args[0] == "tb_next"
             ) or TYPE_CHECKING:  # pragma: no cover
                 return tb_next
@@ -107,8 +103,7 @@ else:
             return operation.delegate()  # type: ignore[no-any-return]
 
         return cast(
-            TracebackType,
-            tputil.make_proxy(controller, type(base_tb), base_tb),
+            TracebackType, tputil.make_proxy(controller, type(base_tb), base_tb)
         )  # Returns proxy to traceback
 
 
@@ -116,8 +111,7 @@ else:
 # `strict_exception_groups=False`. Once that is retired this function and its helper can
 # be removed as well.
 def concat_tb(
-    head: TracebackType | None,
-    tail: TracebackType | None,
+    head: TracebackType | None, tail: TracebackType | None
 ) -> TracebackType | None:
     # We have to use an iterative algorithm here, because in the worst case
     # this might be a RecursionError stack that is by definition too deep to
