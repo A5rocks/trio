@@ -465,13 +465,15 @@ async def test_SocketType_setsockopt() -> None:
 
 
 def test_regular_socket() -> None:
-    stdlib_socket.socket().setsockopt(
+    stdlib_sock = stdlib_socket.socket()
+    stdlib_sock.setsockopt(
         stdlib_socket.SOL_SOCKET,
         stdlib_socket.SO_BINDTODEVICE,
         None,
         0,
     )
-    setsockopt_tests(stdlib_socket.socket())
+    setsockopt_tests(stdlib_sock)
+    stdlib_sock.close()
 
 
 def setsockopt_tests(sock: SocketType | SocketStream) -> None:
