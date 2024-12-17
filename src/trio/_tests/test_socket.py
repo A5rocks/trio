@@ -464,6 +464,16 @@ async def test_SocketType_setsockopt() -> None:
         setsockopt_tests(sock)
 
 
+def test_regular_socket() -> None:
+    stdlib_socket.socket().setsockopt(
+        stdlib_socket.SOL_SOCKET,
+        stdlib_socket.SO_BINDTODEVICE,
+        None,
+        0,
+    )
+    setsockopt_tests(stdlib_socket.socket())
+
+
 def setsockopt_tests(sock: SocketType | SocketStream) -> None:
     """Extract these out, to be reused for SocketStream also."""
     # specifying optlen. Not supported on pypy, and I couldn't find
