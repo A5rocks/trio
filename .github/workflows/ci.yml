@@ -354,7 +354,7 @@ jobs:
         run: source .venv/bin/activate && ./ci.sh
       - name: Get Python version for codecov flag
         id: get-version
-        run: python -c "import sys; print('.'.join(map(str, sys.version_info[:2])))" >> "${GITHUB_OUTPUT}"
+        run: python -c "import sys; print('version=' + '.'.join(map(str, sys.version_info[:2])))" >> "${GITHUB_OUTPUT}"
       - if: always()
         uses: codecov/codecov-action@v3
         with:
@@ -413,9 +413,7 @@ jobs:
 
       - name: get Python version for codecov flag
         id: get-version
-        run: >-
-          echo "version=$(python -V | cut -d' ' -f2 | cut -d'.' -f1,2)"
-          >> "${GITHUB_OUTPUT}"
+        run: python -c "import sys; print('version=' + '.'.join(map(str, sys.version_info[:2])))" >> "${GITHUB_OUTPUT}"
       - if: always()
         uses: codecov/codecov-action@v5
         with:
