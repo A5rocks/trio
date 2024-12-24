@@ -197,18 +197,11 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          # This allows the matrix to specify just the major.minor version while still
-          # expanding it to get the latest patch version including alpha releases.
-          # This avoids the need to update for each new alpha, beta, release candidate,
-          # and then finally an actual release version.  actions/setup-python doesn't
-          # support this for PyPy presently so we get no help there.
-          #
-          # 'CPython' -> '3.9.0-alpha - 3.9.X'
-          # 'PyPy'    -> 'pypy-3.9'
-          python-version: ${{ fromJSON(format('["{0}", "{1}"]', format('{0}.0-alpha - {0}.X', matrix.python), matrix.python))[startsWith(matrix.python, 'pypy')] }}
+          python-version: ${{ matrix.python }}
           architecture: '${{ matrix.arch }}'
           cache: pip
           cache-dependency-path: test-requirements.txt
+          allow-prereleases: true
       - name: Run tests
         run: ./ci.sh
         shell: bash
@@ -272,9 +265,10 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ fromJSON(format('["{0}", "{1}"]', format('{0}.0-alpha - {0}.X', matrix.python), matrix.python))[startsWith(matrix.python, 'pypy')] }}
+          python-version: ${{ matrix.python }}
           cache: pip
           cache-dependency-path: test-requirements.txt
+          allow-prereleases: true
       - name: Run tests
         run: ./ci.sh
         env:
@@ -319,9 +313,10 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ fromJSON(format('["{0}", "{1}"]', format('{0}.0-alpha - {0}.X', matrix.python), matrix.python))[startsWith(matrix.python, 'pypy')] }}
+          python-version: ${{ matrix.python }}
           cache: pip
           cache-dependency-path: test-requirements.txt
+          allow-prereleases: true
       - name: Run tests
         run: ./ci.sh
       - if: always()
