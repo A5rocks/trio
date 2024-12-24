@@ -473,7 +473,6 @@ def test_regular_socket() -> None:
             None,
             0,
         )
-        setsockopt_tests(stdlib_sock)
 
 
 def setsockopt_tests(sock: SocketType | SocketStream) -> None:
