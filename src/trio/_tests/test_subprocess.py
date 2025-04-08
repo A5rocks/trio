@@ -765,3 +765,28 @@ async def test_subprocess_pidfd_unnotified() -> None:
             # for everything to notice
             await noticed_exit.wait()
         assert noticed_exit.is_set(), "child task wasn't woken after poll, DEADLOCK"
+
+
+@pytest.mark.skipif(not posix, reason="posix only")
+async def test_shells_killed_by_default() -> None:
+    async with trio.open_nursery() as nursery:
+        proc = await nursery.start(
+            partial(
+                trio.run_process,
+                'python -u -c "import os, time; print(os.getpid()); time.sleep(5)" | cat',
+                shell=True,
+                stdout=subprocess.PIPE,
+            )
+        )
+        await trio.sleep(0.1)
+        nursery.cancel_scope.cancel()
+
+    chunks = []
+    with trio.move_on_after(0.1):
+        async with proc.stdout:
+            async for c in proc.stdout:
+                chunks.append(c)  # noqa: PERF401
+
+    child_pid = int(b"".join(chunks))
+    with pytest.raises(OSError, match="No such process"):
+        os.kill(child_pid, 0)

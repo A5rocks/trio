@@ -712,6 +712,9 @@ async def _run_process(
                 "stderr=subprocess.PIPE is only valid with nursery.start, "
                 "since that's the only way to access the pipe",
             )
+
+    options["shell"] = shell
+
     if isinstance(stdin, (bytes, bytearray, memoryview)):
         input_ = stdin
         options["stdin"] = subprocess.PIPE
@@ -735,7 +738,11 @@ async def _run_process(
     if shell and sys.platform != "win32" and "process_group" not in options:
         options["process_group"] = 0
 
-    if options.get("process_group") is not None and sys.platform != "win32":
+    if (
+        options.get("process_group") is not None
+        and sys.platform != "win32"
+        and sys.version_info < (3, 11)
+    ):
         # backport the argument to Python versions prior to 3.11
         preexec_fn = options.get("preexec_fn")
         process_group = options.pop("process_group")
