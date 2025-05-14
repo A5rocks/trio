@@ -59,7 +59,7 @@ else
 fi
 
 if [ "${MEMRAY-0}" == 1 ]; then
-    flags="--memray --native $flags"
+    flags="--memray --native --trace-python-allocators $flags"
 fi
 
 # So we can run the test for our apport/excepthook interaction working
