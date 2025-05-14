@@ -1,5 +1,6 @@
 # For tests
 pytest >= 5.0         # for faulthandler in core
+pytest-memray; os_name == "posix"
 coverage >= 7.2.5
 async_generator >= 1.9
 pyright

@@ -235,7 +235,7 @@ jobs:
     needs:
       - build
 
-    timeout-minutes: 10
+    timeout-minutes: 20
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
@@ -289,6 +289,7 @@ jobs:
         run: ./ci.sh
         env:
           NO_TEST_REQUIREMENTS: '${{ matrix.no_test_requirements }}'
+          MEMRAY: '1'
       - if: >-
           always()
           && matrix.check_formatting != '1'
