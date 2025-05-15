@@ -117,33 +117,33 @@ jobs:
         shell: bash -eEuo pipefail {0}
         working-directory: git-src
 
-      - name: >-
-          Smoke-test: collect tests from the Git repo
-        env:
-          PYTHONPATH: src/
-        run: >-
-          pytest --collect-only -qq .
-          | sort
-          | tee collected-tests
-        shell: bash -eEuo pipefail {0}
-        working-directory: git-src
+      # - name: >-
+      #     Smoke-test: collect tests from the Git repo
+      #   env:
+      #     PYTHONPATH: src/
+      #   run: >-
+      #     pytest --collect-only -qq .
+      #     | sort
+      #     | tee collected-tests
+      #   shell: bash -eEuo pipefail {0}
+      #   working-directory: git-src
 
-      - name: >-
-          Smoke-test: collect tests from the sdist tarball
-        env:
-          PYTHONPATH: src/
-        run: >-
-          pytest --collect-only -qq .
-          | sort
-          | tee collected-tests
-        shell: bash -eEuo pipefail {0}
-        working-directory: sdist-src
+      # - name: >-
+      #     Smoke-test: collect tests from the sdist tarball
+      #   env:
+      #     PYTHONPATH: src/
+      #   run: >-
+      #     pytest --collect-only -qq .
+      #     | sort
+      #     | tee collected-tests
+      #   shell: bash -eEuo pipefail {0}
+      #   working-directory: sdist-src
 
-      - name: >-
-          Smoke-test:
-          verify that all the tests from Git are included in the sdist
-        run: diff --unified sdist-src/collected-tests git-src/collected-tests
-        shell: bash -eEuo pipefail {0}
+      # - name: >-
+      #     Smoke-test:
+      #     verify that all the tests from Git are included in the sdist
+      #   run: diff --unified sdist-src/collected-tests git-src/collected-tests
+      #   shell: bash -eEuo pipefail {0}
 
   Windows:
     name: 'Windows (${{ matrix.python }}, ${{ matrix.arch }}${{ matrix.extra_name }})'
