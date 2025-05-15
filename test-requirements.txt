@@ -42,7 +42,6 @@ coverage==7.8.0
     # via -r test-requirements.in
 cryptography==44.0.2
     # via
-    #   -r test-requirements.in
     #   pyopenssl
     #   trustme
     #   types-pyopenssl
