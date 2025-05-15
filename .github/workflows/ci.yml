@@ -202,7 +202,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: matrix.python
+          python-version: ${{ matrix.python }}
           architecture: '${{ matrix.arch }}'
           cache: pip
           cache-dependency-path: test-requirements.txt
@@ -268,7 +268,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: matrix.python
+          python-version: ${{ matrix.python }}
           cache: pip
           cache-dependency-path: test-requirements.txt
       - name: Check Formatting
@@ -320,7 +320,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: matrix.python
+          python-version: ${{ matrix.python }}
           cache: pip
           cache-dependency-path: test-requirements.txt
       - name: Run tests
@@ -398,7 +398,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-            python-version: '${{ matrix.python }}'
+            python-version: ${{ matrix.python }}
             cache: pip
         # setuptools is needed to get distutils on 3.12, which cythonize requires
       - name: install trio and setuptools
