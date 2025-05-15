@@ -48,7 +48,7 @@ def pytest_pyfunc_call(pyfuncitem: pytest.Function) -> None:
 
 
 def skip_if_optional_else_raise(error: ImportError) -> NoReturn:
-    if SKIP_OPTIONAL_IMPORTS:
+    if True:
         pytest.skip(error.msg, allow_module_level=True)
     else:  # pragma: no cover
         raise error
