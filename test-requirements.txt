@@ -20,10 +20,8 @@ black==25.1.0 ; implementation_name == 'cpython'
     # via -r test-requirements.in
 certifi==2025.4.26
     # via requests
-cffi==1.17.1 ; os_name == 'nt' or platform_python_implementation != 'PyPy'
-    # via
-    #   -r test-requirements.in
-    #   cryptography
+cffi==1.17.1 ; os_name == 'nt'
+    # via -r test-requirements.in
 cfgv==3.4.0
     # via pre-commit
 charset-normalizer==3.4.1
@@ -40,11 +38,6 @@ colorama==0.4.6 ; sys_platform == 'win32'
     #   sphinx
 coverage==7.8.0
     # via -r test-requirements.in
-cryptography==44.0.2
-    # via
-    #   pyopenssl
-    #   trustme
-    #   types-pyopenssl
 dill==0.4.0
     # via pylint
 distlib==0.3.9
@@ -63,7 +56,6 @@ idna==3.10
     # via
     #   -r test-requirements.in
     #   requests
-    #   trustme
 imagesize==1.4.1
     # via sphinx
 importlib-metadata==8.7.0 ; python_full_version < '3.10'
@@ -111,13 +103,11 @@ pluggy==1.5.0
     # via pytest
 pre-commit==4.2.0
     # via -r test-requirements.in
-pycparser==2.22 ; os_name == 'nt' or platform_python_implementation != 'PyPy'
+pycparser==2.22 ; os_name == 'nt'
     # via cffi
 pygments==2.19.1
     # via sphinx
 pylint==3.3.6
-    # via -r test-requirements.in
-pyopenssl==25.0.0
     # via -r test-requirements.in
 pyright==1.1.400
     # via -r test-requirements.in
@@ -166,15 +156,9 @@ tomli==2.2.1 ; python_full_version < '3.11'
     #   sphinx
 tomlkit==0.13.2
     # via pylint
-trustme==1.2.1
-    # via -r test-requirements.in
 types-cffi==1.17.0.20250326
-    # via
-    #   -r test-requirements.in
-    #   types-pyopenssl
-types-docutils==0.21.0.20241128
     # via -r test-requirements.in
-types-pyopenssl==24.1.0.20240722
+types-docutils==0.21.0.20241128
     # via -r test-requirements.in
 types-pyyaml==6.0.12.20250326
     # via -r test-requirements.in
@@ -187,7 +171,6 @@ typing-extensions==4.13.2
     #   black
     #   mypy
     #   pylint
-    #   pyopenssl
     #   pyright
 urllib3==2.4.0
     # via requests
