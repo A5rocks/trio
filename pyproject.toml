@@ -331,7 +331,9 @@ exclude_also = [
    "@overload",
    'class .*\bProtocol\b.*\):',
    "raise NotImplementedError",
-   'TODO: test this line'
+   '.*if "sphinx" in sys.modules:',
+   'TODO: test this line',
+   'if __name__ == "__main__":',
 ]
 partial_branches = [
     "pragma: no branch",

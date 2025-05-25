@@ -181,11 +181,14 @@ jobs:
           #  lsp: 'http://download.pctools.com/mirror/updates/9.0.0.2308-SDavfree-lite_en.exe'
           #  lsp_extract_file: ''
           #  extra_name: ', with non-IFS LSP'
+
+    # ***REMEMBER*** to remove the 3.14 line once windows+cffi works again
     continue-on-error: >-
       ${{
         (
           endsWith(matrix.python, '-dev')
           || endsWith(matrix.python, '-nightly')
+          || matrix.python == '3.14'
         )
         && true
         || false
@@ -438,7 +441,6 @@ jobs:
           name: Cython
           flags: Cython,${{ steps.get-version.outputs.version }}
           fail_ci_if_error: false
-          version: 10.2.1
 
   # https://github.com/marketplace/actions/alls-green#why
   check:  # This job does nothing and is only used for the branch protection
