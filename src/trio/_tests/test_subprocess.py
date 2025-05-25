@@ -787,6 +787,8 @@ async def test_shells_killed_by_default() -> None:
             async for c in proc.stdout:
                 chunks.append(c)  # noqa: PERF401
 
+    # give the child time to be cancelled
+    await trio.sleep(0.1)
     child_pid = int(b"".join(chunks))
     with pytest.raises(OSError, match="No such process"):
         os.kill(child_pid, 0)
