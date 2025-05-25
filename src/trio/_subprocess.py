@@ -754,9 +754,9 @@ async def _run_process(
         preexec_fn = options.get("preexec_fn")
         process_group = options.pop("process_group")
 
-        def new_preexecfn() -> object:
-            if sys.platform != "win32":
-                os.setpgid(0, process_group)  # type: ignore[arg-type]
+        def new_preexecfn() -> object:  # pragma: no cover
+            assert sys.platform != "win32"
+            os.setpgid(0, process_group)  # type: ignore[arg-type]
 
             if callable(preexec_fn):
                 return preexec_fn()

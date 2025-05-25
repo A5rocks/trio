@@ -769,7 +769,7 @@ async def test_subprocess_pidfd_unnotified() -> None:
 
 @pytest.mark.skipif(not posix, reason="posix only")
 async def test_shells_killed_by_default() -> None:
-    async with trio.open_nursery() as nursery:
+    async with _core.open_nursery() as nursery:
         proc = await nursery.start(
             partial(
                 trio.run_process,
@@ -778,6 +778,10 @@ async def test_shells_killed_by_default() -> None:
                 stdout=subprocess.PIPE,
             )
         )
+
+        # we need to wait until the process is started before cancelling it,
+        # otherwise, it never prints a PID (in fact the shell might not even
+        # have the chance to spawn children either)
         await trio.sleep(0.1)
         nursery.cancel_scope.cancel()
 
@@ -787,8 +791,32 @@ async def test_shells_killed_by_default() -> None:
             async for c in proc.stdout:
                 chunks.append(c)  # noqa: PERF401
 
-    # give the child time to be cancelled
+    # give the child time to wind down execution (this is unfortunate)
     await trio.sleep(0.1)
+
     child_pid = int(b"".join(chunks))
     with pytest.raises(OSError, match="No such process"):
         os.kill(child_pid, 0)
+
+
+@pytest.mark.skipif(not posix, reason="posix only")
+async def test_process_group_SIGKILL_escalation(mock_clock: MockClock) -> None:
+    mock_clock.autojump_threshold = 0.1
+
+    with pytest.warns(RuntimeWarning, match=".*ignored SIGTERM.*"):  # noqa: PT031
+        async with _core.open_nursery() as nursery:
+            nursery.start_soon(
+                partial(
+                    trio.run_process,
+                    [
+                        "python",
+                        "-c",
+                        "import os, time, signal;"
+                        "signal.signal(signal.SIGTERM, signal.SIG_IGN);"
+                        "time.sleep(10)",
+                    ],
+                    process_group=0,
+                )
+            )
+            await trio.sleep(0.1)
+            nursery.cancel_scope.cancel()
