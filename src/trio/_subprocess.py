@@ -738,6 +738,13 @@ async def _run_process(
     if shell and sys.platform != "win32" and "process_group" not in options:
         options["process_group"] = 0
 
+    if deliver_cancel is None:
+        if os.name == "nt":
+            deliver_cancel = _windows_deliver_cancel
+        else:
+            assert os.name == "posix"
+            deliver_cancel = _get_posix_deliver_cancel(options.get("process_group"))  # type: ignore[arg-type]
+
     if (
         options.get("process_group") is not None
         and sys.platform != "win32"
@@ -757,13 +764,6 @@ async def _run_process(
                 return None
 
         options["preexec_fn"] = new_preexecfn
-
-    if deliver_cancel is None:
-        if os.name == "nt":
-            deliver_cancel = _windows_deliver_cancel
-        else:
-            assert os.name == "posix"
-            deliver_cancel = _get_posix_deliver_cancel(options.get("process_group"))  # type: ignore[arg-type]
 
     stdout_chunks: list[bytes | bytearray] = []
     stderr_chunks: list[bytes | bytearray] = []
