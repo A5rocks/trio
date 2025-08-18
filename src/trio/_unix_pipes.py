@@ -173,7 +173,7 @@ class FdStream(Stream):
                 try:
                     data = os.read(self._fd_holder.fd, max_bytes)
                 except BlockingIOError:
-                    await trio.lowlevel.wait_readable(self._fd_holder.fd)
+                    pass
                 except OSError as exc:
                     if exc.errno == errno.EBADF:
                         raise trio.ClosedResourceError(
@@ -183,6 +183,8 @@ class FdStream(Stream):
                         raise trio.BrokenResourceError from exc
                 else:
                     break
+
+                await trio.lowlevel.wait_readable(self._fd_holder.fd)
 
             return data
 
