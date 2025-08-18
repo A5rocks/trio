@@ -690,7 +690,7 @@ def test_guest_mode_asyncgens() -> None:
             yield 1
         finally:
             library = sniffio.current_async_library()
-            with contextlib.suppress(BaseException):
+            with contextlib.suppress(GeneratorExit):
                 await sys.modules[library].sleep(0)
             record.add((label, library))
 
@@ -728,7 +728,7 @@ def test_guest_mode_asyncgens_garbage_collection() -> None:
             yield 1
         finally:
             library = sniffio.current_async_library()
-            with contextlib.suppress(BaseException):
+            with contextlib.suppress(GeneratorExit):
                 await sys.modules[library].sleep(0)
 
             del a
