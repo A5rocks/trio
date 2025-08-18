@@ -1291,12 +1291,14 @@ class Nursery(metaclass=NoPublicConstructor):
         self._check_nursery_closed()
 
         if not self._closed:
+            active_exception = sys.exc_info()[1]
+
             # If we have a KeyboardInterrupt injected, we want to save it in
             # the nursery's final exceptions list. But if it's just a
             # Cancelled, then we don't -- see gh-1457.
             def aborted(raise_cancel: _core.RaiseCancelT) -> Abort:
                 exn = capture(raise_cancel).error
-                if not isinstance(exn, Cancelled):
+                if not isinstance(exn, Cancelled) and exn is not active_exception:
                     self._add_exc(
                         exn,
                         CancelReason(
@@ -1317,7 +1319,6 @@ class Nursery(metaclass=NoPublicConstructor):
             try:
                 await cancel_shielded_checkpoint()
             except BaseException as exc:
-                # there's no children to cancel, so don't need to supply cancel reason
                 self._add_exc(exc, reason=None)
 
         popped = self._parent_task._child_nurseries.pop()
@@ -1510,6 +1511,7 @@ class Task(metaclass=NoPublicConstructor):  # type: ignore[explicit-any]
     _next_send_fn: Callable[[Any], object] | None = None  # type: ignore[explicit-any]
     _next_send: Outcome[Any] | BaseException | None = None  # type: ignore[explicit-any]
     _abort_func: Callable[[_core.RaiseCancelT], Abort] | None = None
+    _active_exception: BaseException | None = None
     custom_sleep_data: Any = None  # type: ignore[explicit-any]
 
     # For introspection and nursery.start()
@@ -1649,8 +1651,12 @@ class Task(metaclass=NoPublicConstructor):  # type: ignore[explicit-any]
             return
 
         reason = self._cancel_status._scope._cancel_reason
+        active_exception = self._active_exception
 
         def raise_cancel() -> NoReturn:
+            if active_exception is not None:
+                raise active_exception
+
             if reason is None:
                 raise Cancelled._create(source="unknown", reason="misnesting")
             else:
@@ -2834,7 +2840,7 @@ def unrolled_run(
 
                 next_send_fn = task._next_send_fn
                 next_send = task._next_send
-                task._next_send_fn = task._next_send = None
+                task._next_send_fn = task._next_send = task._active_exception = None
                 final_outcome: Outcome[object] | None = None
 
                 assert next_send_fn is not None
@@ -2884,6 +2890,7 @@ def unrolled_run(
                     elif type(msg) is WaitTaskRescheduled:
                         task._cancel_points += 1
                         task._abort_func = msg.abort_func
+                        task._active_exception = msg.active_exception[1]
                         # KI is "outside" all cancel scopes, so check for it
                         # before checking for regular cancellation:
                         if runner.ki_pending and task is runner.main_task:

@@ -41,6 +41,7 @@ async def _serve_one_listener(
     handler_nursery: trio.Nursery,
     handler: Handler[StreamT],
 ) -> NoReturn:
+    retry = False
     async with listener:
         while True:
             try:
@@ -54,11 +55,15 @@ async def _serve_one_listener(
                         SLEEP_TIME,
                         exc_info=True,
                     )
-                    await trio.sleep(SLEEP_TIME)
+                    retry = True
                 else:
                     raise
             else:
                 handler_nursery.start_soon(_run_handler, stream, handler)
+
+            if retry:
+                await trio.sleep(SLEEP_TIME)
+            retry = False
 
 
 # This cannot be typed correctly, we need generic typevar bounds / HKT to indicate the

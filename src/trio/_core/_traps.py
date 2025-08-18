@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import enum
+import sys
 import types
 
 # Jedi gets mad in test_static_tool_sees_class_members if we use collections Callable
@@ -33,6 +34,9 @@ class CancelShieldedCheckpoint:
 @attrs.frozen(slots=False)
 class WaitTaskRescheduled:
     abort_func: Callable[[RaiseCancelT], Abort]
+    active_exception: tuple[object, BaseException | None, object] = attrs.field(
+        init=False, factory=sys.exc_info
+    )
 
 
 # Not exported in the trio._core namespace, but imported directly by _run.

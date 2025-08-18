@@ -341,15 +341,18 @@ class CapacityLimiter(AsyncContextManagerMixin):
         try:
             self.acquire_on_behalf_of_nowait(borrower)
         except trio.WouldBlock:
-            task = trio.lowlevel.current_task()
-            self._pending_borrowers[task] = borrower
-            try:
-                await self._lot.park()
-            except trio.Cancelled:
-                self._pending_borrowers.pop(task)
-                raise
+            pass
         else:
             await trio.lowlevel.cancel_shielded_checkpoint()
+            return
+
+        task = trio.lowlevel.current_task()
+        self._pending_borrowers[task] = borrower
+        try:
+            await self._lot.park()
+        except trio.Cancelled:
+            self._pending_borrowers.pop(task)
+            raise
 
     @enable_ki_protection
     def release(self) -> None:
@@ -492,9 +495,12 @@ class Semaphore(AsyncContextManagerMixin):
         try:
             self.acquire_nowait()
         except trio.WouldBlock:
-            await self._lot.park()
+            pass
         else:
             await trio.lowlevel.cancel_shielded_checkpoint()
+            return
+
+        await self._lot.park()
 
     @enable_ki_protection
     def release(self) -> None:
@@ -598,17 +604,20 @@ class _LockImpl(AsyncContextManagerMixin):
         try:
             self.acquire_nowait()
         except trio.WouldBlock:
-            try:
-                # NOTE: it's important that the contended acquire path is just
-                # "_lot.park()", because that's how Condition.wait() acquires the
-                # lock as well.
-                await self._lot.park()
-            except trio.BrokenResourceError:
-                raise trio.BrokenResourceError(
-                    f"Owner of this lock exited without releasing: {self._owner}",
-                ) from None
+            pass
         else:
             await trio.lowlevel.cancel_shielded_checkpoint()
+            return
+
+        try:
+            # NOTE: it's important that the contended acquire path is just
+            # "_lot.park()", because that's how Condition.wait() acquires the
+            # lock as well.
+            await self._lot.park()
+        except trio.BrokenResourceError:
+            raise trio.BrokenResourceError(
+                f"Owner of this lock exited without releasing: {self._owner}",
+            ) from None
 
     @enable_ki_protection
     def release(self) -> None:

@@ -605,11 +605,9 @@ async def test_as_safe_channel_multi_cancel() -> None:
         try:
             yield
         finally:
-            # this will give a warning of ASYNC120, although it's not technically a
-            # problem of swallowing existing exceptions
             try:
                 await trio.lowlevel.checkpoint()
-            except trio.Cancelled:
+            except BaseException:
                 events.append("agen cancel")
                 raise
 

@@ -314,7 +314,7 @@ def test_delegation_to_existing_hooks() -> None:
         try:
             yield 42
         finally:
-            with pytest.raises(_core.Cancelled):
+            with pytest.raises(GeneratorExit):
                 await _core.checkpoint()
             record.append("trio collected " + arg)
 
