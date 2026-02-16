@@ -835,8 +835,8 @@ async def test_process_group_SIGKILL_escalation(mock_clock: MockClock) -> None:
                         "python",
                         "-c",
                         "import os, time, signal;"
-                        f"os.kill({os.getpid()}, signal.SIGHUP);"
                         "signal.signal(signal.SIGTERM, signal.SIG_IGN);"
+                        f"os.kill({os.getpid()}, signal.SIGHUP);"
                         "time.sleep(10)",
                     ],
                     process_group=0,
