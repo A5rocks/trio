@@ -812,8 +812,8 @@ async def test_shells_killed_by_default() -> None:
                         assert "Z" in line
                         hit_zombie = True
 
-                if hit_zombie:
-                    raise FileNotFoundError
+                assert hit_zombie
+                raise FileNotFoundError
     else:
         with pytest.raises(OSError, match="No such process"):
             os.kill(child_pid, 0)
