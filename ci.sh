@@ -69,42 +69,8 @@ perl -i -pe 's/-p trio\._tests\.pytest_plugin//' "$INSTALLDIR/pyproject.toml"
 
 echo "::endgroup::"
 
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
-
-COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
-coverage run --rcfile=../pyproject.toml \
-repro.py
+for i in {1..100}; do
+    COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+    coverage run --rcfile=../pyproject.toml \
+    repro.py
+done
