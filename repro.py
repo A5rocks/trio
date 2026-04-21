@@ -12,6 +12,8 @@ async def check_run_in_trio_thread() -> None:
     def external_thread_fn() -> None:
         try:
             signal.raise_signal(signal.SIGINT)
+            while True:
+                pass  # wait until we get a KI
         except KeyboardInterrupt:
             pass
 
