@@ -11,7 +11,7 @@ async def check_run_in_trio_thread() -> None:
 
     def external_thread_fn() -> None:
         try:
-            trio.from_thread.run_sync(trio_thread_fn, trio_token=token)
+            signal.raise_signal(signal.SIGINT)
         except KeyboardInterrupt:
             pass
 
