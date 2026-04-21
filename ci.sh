@@ -19,7 +19,5 @@ echo "::endgroup::"
 INSTALLDIR=$(python -c "import os, trio; print(os.path.dirname(trio.__file__))")
 
 for i in {1..100}; do
-    COVERAGE_PROCESS_START=$(pwd)/pyproject.toml \
-    coverage run --rcfile=pyproject.toml \
-    repro.py
+    coverage run repro.py
 done
