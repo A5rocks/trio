@@ -74,3 +74,66 @@ pytest -ra --junitxml=../test-results.xml \
 -p _trio_check_attrs_aliases --verbose --durations=10 \
     -k test_run_in_trio_thread_ki -s \
 -p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
+
+PYTHONPATH=../tests COVERAGE_PROCESS_START=$(pwd)/../pyproject.toml \
+coverage run --rcfile=../pyproject.toml -m \
+pytest -ra --junitxml=../test-results.xml \
+-p _trio_check_attrs_aliases --verbose --durations=10 \
+    -k test_run_in_trio_thread_ki -s \
+-p trio._tests.pytest_plugin --run-slow --skip-optional-imports "${INSTALLDIR}"
