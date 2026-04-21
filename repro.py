@@ -1,6 +1,7 @@
 import trio
 import signal
 import threading
+import gc
 
 def run_in_trio_thread_ki_inner() -> None:
     # if we get a control-C during a run_in_trio_thread, then it propagates
@@ -49,4 +50,7 @@ def run_in_trio_thread_ki_inner() -> None:
     trio.run(check_run_in_trio_thread)
     assert record == {"ok1", "ok2"}
 
-run_in_trio_thread_ki_inner()
+for _ in range(100):
+    run_in_trio_thread_ki_inner()
+    for _ in range(6):
+        gc.collect()

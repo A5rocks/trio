@@ -3,21 +3,17 @@
 set -ex -o pipefail
 
 echo "::group::Install dependencies"
-python -m pip install -U pip uv -c test-requirements.txt
+python -m pip install -U pip -c test-requirements.txt
 python -m pip --version
-python -m uv --version
 
-python -m uv pip install build
+python -m pip install build
 
 python -m build
 wheel_package=$(ls dist/*.whl)
-python -m uv pip install "trio @ $wheel_package" -c test-requirements.txt
+python -m pip install "$wheel_package" -c test-requirements.txt
 
-python -m uv pip install coverage -c test-requirements.txt
 echo "::endgroup::"
 
-INSTALLDIR=$(python -c "import os, trio; print(os.path.dirname(trio.__file__))")
-
-for i in {1..100}; do
-    coverage run repro.py
+for i in {1..1000}; do
+    python repro.py
 done
