@@ -122,7 +122,7 @@ async def test_do_in_trio_thread_from_trio_thread() -> None:
         from_thread_run(foo)
 
 
-def test_run_in_trio_thread_ki() -> None:
+def run_in_trio_thread_ki_inner() -> None:
     # if we get a control-C during a run_in_trio_thread, then it propagates
     # back to the caller (slick!)
     record = set()
@@ -169,6 +169,95 @@ def test_run_in_trio_thread_ki() -> None:
     _core.run(check_run_in_trio_thread)
     assert record == {"ok1", "ok2"}
 
+def test_run_in_trio_thread_ki0() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki1() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki2() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki3() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki4() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki5() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki6() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki7() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki8() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki9() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki10() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki11() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki12() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki13() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki14() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki15() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki16() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki17() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki18() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki19() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki20() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki21() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki22() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki23() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki24() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki25() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki26() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki27() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki28() -> None:
+    run_in_trio_thread_ki_inner()
+
+def test_run_in_trio_thread_ki29() -> None:
+    run_in_trio_thread_ki_inner()
 
 def test_await_in_trio_thread_while_main_exits() -> None:
     record = []
