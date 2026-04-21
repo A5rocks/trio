@@ -27,9 +27,11 @@ jobs:
         lsp_extract_file: ['']
         extra_name: ['']
 
-        # repeat everything 20x
-        blah: ['1', '2', '3', '4']
-        blahh: ['1', '2', '3', '4', '5']
+        # repeat everything 256x
+        blah: ['1', '2', '3', '4']  # 4
+        blahh: ['1', '2', '3', '4']  # 16
+        blahhh: ['1', '2', '3', '4']  # 64
+        blahhhh: ['1', '2', '3', '4']  # 256
 
     steps:
       - name: Grab the source from Git
