@@ -76,7 +76,7 @@ if sys.platform == "win32" or (
     if sys.platform == "win32":  # pragma: no branch
         from ._wait_for_object import WaitForSingleObject as WaitForSingleObject
 
-if sys.platform != "win32" or (
+if (sys.platform != "win32" and sys.platform != "emscripten") or (
     not _t.TYPE_CHECKING and "sphinx.ext.autodoc" in sys.modules
 ):
     # Unix symbols

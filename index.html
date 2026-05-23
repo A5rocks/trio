@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+      <script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"></script>
+  </head>
+  <body>
+    Pyodide test page <br>
+    Open your browser console to see Pyodide output
+    <script type="text/javascript">
+      async function main(){
+        window.pyodide = await loadPyodide();
+        await pyodide.loadPackage("micropip")
+        window.micropip = pyodide.pyimport("micropip");
+        await micropip.install('/dist/trio-0.33.0+dev-py3-none-any.whl');
+      }
+      main();
+    </script>
+  </body>
+</html>

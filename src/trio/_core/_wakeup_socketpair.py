@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import signal
 import socket
+import sys
 import warnings
 
 from .. import _core
@@ -73,3 +74,31 @@ class WakeupSocketpair:
         self.write_sock.close()
         if self.old_wakeup_fd is not None:
             signal.set_wakeup_fd(self.old_wakeup_fd)
+
+if sys.platform == "emscripten":
+    # there's no such thing as multiple threads, so... whatever.
+    class WakeupSocketpair:
+        def __init__(self):
+            self.waiters = set()
+
+        def wakeup_thread_and_signal_safe(self):
+            # shrug
+            for waiter in self.waiters:
+                _core.reschedule(waiter)
+            self.waiters.clear()
+
+        async def wait_woken(self):
+            task = _core.current_task()
+            self.waiters.add(task)
+            def abort(_):
+                self.waiters.remove(task)
+                return _core.Abort.SUCCEEDED
+
+            await _core.wait_task_rescheduled(abort)
+
+        def wakeup_on_signals(self):
+            # uhhhhh good luck!
+            pass
+
+        def close(self):
+            pass

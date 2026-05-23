@@ -754,7 +754,7 @@ class WindowsIOManager:
         await _core.wait_task_rescheduled(abort_fn)
 
     @_public
-    async def wait_readable(self, sock: _HasFileNo | int) -> None:
+    async def wait_readable(self, sock: int | _HasFileNo) -> None:
         """Block until the kernel reports that the given object is readable.
 
         On Unix systems, ``sock`` must either be an integer file descriptor,
@@ -779,7 +779,7 @@ class WindowsIOManager:
         await self._afd_poll(sock, "read_task")
 
     @_public
-    async def wait_writable(self, sock: _HasFileNo | int) -> None:
+    async def wait_writable(self, sock: int | _HasFileNo) -> None:
         """Block until the kernel reports that the given object is writable.
 
         See `wait_readable` for the definition of ``sock``.

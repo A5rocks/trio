@@ -3126,6 +3126,22 @@ elif TYPE_CHECKING or hasattr(select, "kqueue"):
         KqueueIOManager as TheIOManager,
         _KqueueStatistics as IOStatistics,
     )
+elif sys.platform == "emscripten":
+    async def wait_readable(fd: int | _HasFileNo) -> None:
+        raise TypeError("fds are not a thing with WASM")
+
+    async def wait_writable(fd: int | _HasFileNo) -> None:
+        raise TypeError("fds are not a thing with WASM")
+
+    def notify_closing(fd: int | _HasFileNo) -> None:
+        raise TypeError("fds are not a thing with WASM")
+
+    from ._io_browser import (
+        EventResult as EventResult,
+        BrowserIOManager as TheIOManager,
+        _BrowserStatistics as IOStatistics
+    )
+
 else:  # pragma: no cover
     _patchers = sorted({"eventlet", "gevent"}.intersection(sys.modules))
     if _patchers:

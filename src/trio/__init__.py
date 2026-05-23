@@ -69,18 +69,23 @@ from ._highlevel_socket import (
     SocketListener as SocketListener,
     SocketStream as SocketStream,
 )
-from ._highlevel_ssl_helpers import (
-    open_ssl_over_tcp_listeners as open_ssl_over_tcp_listeners,
-    open_ssl_over_tcp_stream as open_ssl_over_tcp_stream,
-    serve_ssl_over_tcp as serve_ssl_over_tcp,
-)
+try:
+    from ._highlevel_ssl_helpers import (
+        open_ssl_over_tcp_listeners as open_ssl_over_tcp_listeners,
+        open_ssl_over_tcp_stream as open_ssl_over_tcp_stream,
+        serve_ssl_over_tcp as serve_ssl_over_tcp,
+    )
+    from ._ssl import (
+        NeedHandshakeError as NeedHandshakeError,
+        SSLListener as SSLListener,
+        SSLStream as SSLStream,
+    )
+except ImportError as e:
+    # it's ok if ssl wasn't compiled into Python...
+    if e.name != "ssl":
+        raise
 from ._path import Path as Path, PosixPath as PosixPath, WindowsPath as WindowsPath
 from ._signals import open_signal_receiver as open_signal_receiver
-from ._ssl import (
-    NeedHandshakeError as NeedHandshakeError,
-    SSLListener as SSLListener,
-    SSLStream as SSLStream,
-)
 from ._subprocess import Process as Process, run_process as run_process
 from ._sync import (
     CapacityLimiter as CapacityLimiter,
