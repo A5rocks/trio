@@ -757,13 +757,18 @@ def test_guest_mode_asyncgens_garbage_collection() -> None:
 
 def test_notify_closing_after_events() -> None:
     # inspired by wrong repro in https://github.com/python-trio/trio/pull/3502
+    pair = socket.socketpair()
+    for sock in pair:
+        sock.setblocking(False)
+
     async def trio_main(in_host: InHost) -> None:
         in_host(uh_oh)
-        await trio.lowlevel.wait_readable(f)
+        await trio.lowlevel.wait_writable(pair[0])  # blocks
 
     def uh_oh() -> None:
         # this will run after trio gets events but before they are processed
-        trio.lowlevel.notify_closing(f)
+        trio.lowlevel.notify_closing(pair[0])
 
-    with open(__file__) as f:
-        trivial_guest_run(trio_main)
+    trivial_guest_run(trio_main)
+    for sock in pair:
+        sock.close()
