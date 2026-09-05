@@ -753,3 +753,17 @@ def test_guest_mode_asyncgens_garbage_collection() -> None:
     aiotrio_run(trio_main, host_uses_signal_set_wakeup_fd=True)
 
     assert record == {("asyncio", "asyncio", True), ("trio", "trio", True)}
+
+
+def test_notify_closing_after_events() -> None:
+    # inspired by wrong repro in https://github.com/python-trio/trio/pull/3502
+    async def trio_main(in_host: InHost) -> None:
+        in_host(uh_oh)
+        await trio.lowlevel.wait_readable(f)
+
+    def uh_oh() -> None:
+        # this will run after trio gets events but before they are processed
+        trio.lowlevel.notify_closing(f)
+
+    with open(__file__) as f:
+        trivial_guest_run(trio_main)
